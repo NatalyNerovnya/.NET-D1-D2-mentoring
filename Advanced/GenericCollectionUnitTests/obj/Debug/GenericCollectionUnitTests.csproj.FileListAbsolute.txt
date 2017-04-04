@@ -1,0 +1,7 @@
+D:\.NET mentoring\Advanced\GenericCollectionUnitTests\bin\Debug\GenericCollectionUnitTests.dll
+D:\.NET mentoring\Advanced\GenericCollectionUnitTests\bin\Debug\GenericCollectionUnitTests.pdb
+D:\.NET mentoring\Advanced\GenericCollectionUnitTests\bin\Debug\GenericCollection.dll
+D:\.NET mentoring\Advanced\GenericCollectionUnitTests\bin\Debug\GenericCollection.pdb
+D:\.NET mentoring\Advanced\GenericCollectionUnitTests\obj\Debug\GenericCollectionUnitTests.csprojResolveAssemblyReference.cache
+D:\.NET mentoring\Advanced\GenericCollectionUnitTests\obj\Debug\GenericCollectionUnitTests.dll
+D:\.NET mentoring\Advanced\GenericCollectionUnitTests\obj\Debug\GenericCollectionUnitTests.pdb

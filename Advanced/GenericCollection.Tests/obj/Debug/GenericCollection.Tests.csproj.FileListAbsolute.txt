@@ -1,0 +1,11 @@
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\GenericCollection.Tests.dll.config
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\GenericCollection.Tests.dll
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\GenericCollection.Tests.pdb
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\GenericCollection.dll
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\nunit.framework.dll
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\TechTalk.SpecFlow.dll
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\GenericCollection.pdb
+D:\.NET mentoring\Advanced\GenericCollection.Tests\bin\Debug\nunit.framework.xml
+D:\.NET mentoring\Advanced\GenericCollection.Tests\obj\Debug\GenericCollection.Tests.csprojResolveAssemblyReference.cache
+D:\.NET mentoring\Advanced\GenericCollection.Tests\obj\Debug\GenericCollection.Tests.dll
+D:\.NET mentoring\Advanced\GenericCollection.Tests\obj\Debug\GenericCollection.Tests.pdb
