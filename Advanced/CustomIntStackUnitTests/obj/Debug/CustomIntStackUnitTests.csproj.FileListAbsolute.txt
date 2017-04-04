@@ -1,0 +1,7 @@
+D:\.NET mentoring\Advanced\CustomIntStackUnitTests\bin\Debug\CustomIntStackUnitTests.dll
+D:\.NET mentoring\Advanced\CustomIntStackUnitTests\bin\Debug\CustomIntStackUnitTests.pdb
+D:\.NET mentoring\Advanced\CustomIntStackUnitTests\bin\Debug\CustomIntStack.dll
+D:\.NET mentoring\Advanced\CustomIntStackUnitTests\bin\Debug\CustomIntStack.pdb
+D:\.NET mentoring\Advanced\CustomIntStackUnitTests\obj\Debug\CustomIntStackUnitTests.csprojResolveAssemblyReference.cache
+D:\.NET mentoring\Advanced\CustomIntStackUnitTests\obj\Debug\CustomIntStackUnitTests.dll
+D:\.NET mentoring\Advanced\CustomIntStackUnitTests\obj\Debug\CustomIntStackUnitTests.pdb

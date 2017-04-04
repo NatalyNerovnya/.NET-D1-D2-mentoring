@@ -1,0 +1,5 @@
+D:\.NET mentoring\Advanced\CustomIntStack\bin\Debug\CustomIntStack.dll
+D:\.NET mentoring\Advanced\CustomIntStack\bin\Debug\CustomIntStack.pdb
+D:\.NET mentoring\Advanced\CustomIntStack\obj\Debug\CustomIntStack.csprojResolveAssemblyReference.cache
+D:\.NET mentoring\Advanced\CustomIntStack\obj\Debug\CustomIntStack.dll
+D:\.NET mentoring\Advanced\CustomIntStack\obj\Debug\CustomIntStack.pdb
