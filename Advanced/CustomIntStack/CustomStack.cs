@@ -79,7 +79,6 @@ namespace CustomIntStack
             }
         }
 
-        //very bad!! Don't use foreach loop because it will stop after first negative integer
         public bool Equals(CustomStack other)
         {
             if (other == null)
