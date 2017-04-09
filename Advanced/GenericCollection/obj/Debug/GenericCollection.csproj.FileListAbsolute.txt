@@ -1,4 +1,0 @@
-D:\.NET mentoring\Advanced\GenericCollection\bin\Debug\GenericCollection.dll
-D:\.NET mentoring\Advanced\GenericCollection\bin\Debug\GenericCollection.pdb
-D:\.NET mentoring\Advanced\GenericCollection\obj\Debug\GenericCollection.dll
-D:\.NET mentoring\Advanced\GenericCollection\obj\Debug\GenericCollection.pdb
