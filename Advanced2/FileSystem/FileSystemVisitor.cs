@@ -2,37 +2,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace FileSystem
 {
     public class FileSystemVisitor : IEnumerable<string>
     {
-        private string path; 
+        private string path;
+        private readonly Comparison<string> comparer;
 
-        public FileSystemVisitor() : this(@"C:\") { }
+        public FileSystemVisitor() : this(@"C:\", null) { }
 
-        public FileSystemVisitor(string path)
+        public FileSystemVisitor(string path): this(path, null){}
+
+        public FileSystemVisitor(string path, Comparison<string> comparer)
         {
-            if(ReferenceEquals(path, null))
-                throw new ArgumentNullException();
             this.path = path;
+            this.comparer = comparer;
+
+            if (ReferenceEquals(path, null))
+                this.path = @"C:\";
+            if (ReferenceEquals(comparer, null))
+                this.comparer = default(Comparison<string>);
         }
 
-
+        // TODO: Check dirs on NULL
         public IEnumerator<string> GetEnumerator()
         {
             if (Directory.Exists(path))
             {
                 var dirs = Directory.GetDirectories(path);
-                foreach (var s in dirs)
-                {
-                    yield return s;
-                }
                 var files = Directory.GetFiles(path);
-                foreach (var s in files)
+                var elements = dirs.Union(files);
+
+
+                if(! ReferenceEquals(comparer, null))
+                    Array.Sort(dirs, comparer);
+
+                foreach (var s in elements)
                 {
                     yield return s;
                 }
+
             }
             else
             {

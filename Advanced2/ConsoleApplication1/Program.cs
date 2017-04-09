@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using FileSystem;
 
 namespace ConsoleApplication1
@@ -10,7 +8,7 @@ namespace ConsoleApplication1
         static void Main(string[] args)
         {
             string dirName = @"C:\";
-            var fVisitr = new FileSystemVisitor(@"D:\");
+            var fVisitr = new FileSystemVisitor(@"D:\", (s1, s2) => string.Compare(s2, s1, StringComparison.Ordinal));
             foreach (var file in fVisitr)
             {
                 Console.WriteLine(file);
