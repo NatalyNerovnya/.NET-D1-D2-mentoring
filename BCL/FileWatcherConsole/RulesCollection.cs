@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 
-namespace FileSystemWatcherWrapper
+namespace FileWatcherConsole
 {
     [ConfigurationCollection(typeof(RuleElement))]
     public class RulesCollection : ConfigurationElementCollection

@@ -11,13 +11,14 @@ namespace FileSystemWatcherWrapper
     public class CustomFileSystemWatcher
     {
         private FileSystemWatcher watcher;
-        private CustomConfigSection config;
+        //private CustomConfigSection config;
 
         public CustomFileSystemWatcher()
         {
-            config = (CustomConfigSection)ConfigurationManager.GetSection("configuration/CustomSection");
-            watcher = new FileSystemWatcher();
-            watcher.Path = config.Folder.Path;
+            //config = (CustomConfigSection)ConfigurationManager.GetSection("CustomSection");
+            //watcher = new FileSystemWatcher();
+            //var x = config.RuleItems;
+            //watcher.Path = config.Folder.Path;
         }
     }
 }

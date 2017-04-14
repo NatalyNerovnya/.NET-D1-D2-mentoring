@@ -40,12 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomConfigSection.cs" />
     <Compile Include="CustomFileSystemWatcher.cs" />
-    <Compile Include="FolderElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RuleElement.cs" />
-    <Compile Include="RulesCollection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

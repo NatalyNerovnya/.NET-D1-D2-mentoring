@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 
-namespace FileSystemWatcherWrapper
+namespace FileWatcherConsole
 {
     public class FolderElement : ConfigurationElement
     {
-        [ConfigurationProperty("Folder")]
+        [ConfigurationProperty("path")]
         public string Path
         {
             get { return ((string)(base["path"])); }

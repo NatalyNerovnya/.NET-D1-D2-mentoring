@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 
-namespace FileSystemWatcherWrapper
+namespace FileWatcherConsole
 {
     public class RuleElement : ConfigurationElement
     {
@@ -15,7 +15,7 @@ namespace FileSystemWatcherWrapper
             get { return ((string)(base["nameTemplate"])); }
         }
 
-        [ConfigurationProperty("folder", IsKey = false)]
+        [ConfigurationProperty("path", IsKey = false)]
         public string Folder
         {
             get { return ((string)(base["path"])); }

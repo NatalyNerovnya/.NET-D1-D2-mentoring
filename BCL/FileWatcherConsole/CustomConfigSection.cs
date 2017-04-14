@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 
-namespace FileSystemWatcherWrapper
+namespace FileWatcherConsole
 {
     public class CustomConfigSection : ConfigurationSection
     {
