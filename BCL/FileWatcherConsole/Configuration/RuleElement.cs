@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 
-namespace FileWatcherConsole
+namespace FileWatcherConsole.Configuration
 {
     public class RuleElement : ConfigurationElement
     {

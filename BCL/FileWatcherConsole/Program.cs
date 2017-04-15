@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using FileSystemWatcherWrapper;
 using System.Configuration;
+using FileWatcherConsole.Configuration;
 
 namespace FileWatcherConsole
 {

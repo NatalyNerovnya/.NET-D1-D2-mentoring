@@ -42,21 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomConfigSection.cs" />
-    <Compile Include="FolderElement.cs" />
+    <Compile Include="Configuration\CustomConfigSection.cs" />
+    <Compile Include="CustomFileSystemWatcher.cs" />
+    <Compile Include="Configuration\FolderElement.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RuleElement.cs" />
-    <Compile Include="RulesCollection.cs" />
+    <Compile Include="Configuration\RuleElement.cs" />
+    <Compile Include="Configuration\RulesCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FileSystemWatcherWrapper\FileSystemWatcherWrapper.csproj">
-      <Project>{50990298-4b52-488a-ba10-38173daea5ea}</Project>
-      <Name>FileSystemWatcherWrapper</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
