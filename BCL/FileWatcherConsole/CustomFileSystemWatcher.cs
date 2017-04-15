@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Resources;
+using logginng = FileWatcherConsole.Resources.Log;
+using System.Globalization;
 
 namespace FileWatcherConsole
 {
@@ -16,7 +18,6 @@ namespace FileWatcherConsole
     {
         private FileSystemWatcher watcher;
         private CustomConfigSection config;
-        private ResourceManager rm;
 
         public string Path
         {
@@ -31,7 +32,8 @@ namespace FileWatcherConsole
             watcher = new FileSystemWatcher();
             this.config = config;
             var path = config.Folder.Path;
-            //Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-En");
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -42,8 +44,6 @@ namespace FileWatcherConsole
 
             watcher.Changed += new FileSystemEventHandler(OnAdd);
             watcher.Created += new FileSystemEventHandler(OnAdd);
-
-            rm = new ResourceManager("FileWatcherConsole.Resources.Log", typeof(CustomFileSystemWatcher).Assembly);
         }
 
         public void Start()
@@ -61,7 +61,7 @@ namespace FileWatcherConsole
         {
             if (e.ChangeType == WatcherChangeTypes.Created)
             {
-                Console.WriteLine(rm.GetString("newFile"));
+                Console.WriteLine(logginng.NewFile);
             }
             var rules = config.RuleItems;
             bool isMatch = false;
@@ -72,14 +72,14 @@ namespace FileWatcherConsole
                 {
                     MoveToFolder(e.Name, rules[i].Folder);
                     isMatch = true;
-                    Console.WriteLine(rm.GetString("findedRule"));
+                    Console.WriteLine(logginng.FindedRule);
                     break;
                 }
             }
 
             if (!isMatch)
             {
-                Console.WriteLine(rm.GetString("notFindedRule"));
+                Console.WriteLine(logginng.NotFindedRule);
                 MoveToFolder(e.Name, @config.DefaultFolder.Path);
             }
         }
@@ -93,7 +93,7 @@ namespace FileWatcherConsole
             var sourcePath = System.IO.Path.Combine(Path, file);
             var targetPath = System.IO.Path.Combine(folder, file);
             Directory.Move(sourcePath, targetPath);
-            Console.WriteLine("{0} {1}",rm.GetString("move"), folder);
+            Console.WriteLine("{0} {1}",logginng.Move, folder);
         }
     }
 }

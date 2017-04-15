@@ -63,36 +63,36 @@ namespace FileWatcherConsole.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The rule is finded.
         /// </summary>
-        internal static string findedRule {
+        internal static string FindedRule {
             get {
-                return ResourceManager.GetString("findedRule", resourceCulture);
+                return ResourceManager.GetString("FindedRule", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Move element to folder.
         /// </summary>
-        internal static string move {
+        internal static string Move {
             get {
-                return ResourceManager.GetString("move", resourceCulture);
+                return ResourceManager.GetString("Move", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to New elemet is in the folder.
         /// </summary>
-        internal static string newFile {
+        internal static string NewFile {
             get {
-                return ResourceManager.GetString("newFile", resourceCulture);
+                return ResourceManager.GetString("NewFile", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to There is no rule.
         /// </summary>
-        internal static string notFindedRule {
+        internal static string NotFindedRule {
             get {
-                return ResourceManager.GetString("notFindedRule", resourceCulture);
+                return ResourceManager.GetString("NotFindedRule", resourceCulture);
             }
         }
     }

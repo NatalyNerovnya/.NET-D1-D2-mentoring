@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FindedRule" xml:space="preserve">
-    <value>The rule is finded</value>
+    <value>Правило найдено</value>
   </data>
   <data name="Move" xml:space="preserve">
-    <value>Move element to folder</value>
+    <value>Перекидываю элемент в папку</value>
   </data>
   <data name="NewFile" xml:space="preserve">
-    <value>New elemet is in the folder</value>
+    <value>В папке новый элемент</value>
   </data>
   <data name="NotFindedRule" xml:space="preserve">
-    <value>There is no rule</value>
+    <value>Правило не найдено</value>
   </data>
 </root>
