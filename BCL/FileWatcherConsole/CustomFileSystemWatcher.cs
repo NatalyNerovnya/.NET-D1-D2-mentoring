@@ -23,10 +23,10 @@ namespace FileWatcherConsole
             }
         }
 
-        public CustomFileSystemWatcher()
+        public CustomFileSystemWatcher(CustomConfigSection config)
         {
             watcher = new FileSystemWatcher();
-            config = (CustomConfigSection)ConfigurationManager.GetSection("CustomSection");
+            this.config = config;
             var path = config.Folder.Path;
             if (!Directory.Exists(path))
             {
@@ -36,20 +36,30 @@ namespace FileWatcherConsole
             watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
            | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             watcher.Changed += new FileSystemEventHandler(OnAdd);
+            watcher.Created += new FileSystemEventHandler(OnAdd);
+        }
+
+        public void Start()
+        {
             watcher.EnableRaisingEvents = true;
         }
 
-        private static void OnAdd(object source, FileSystemEventArgs e)
+        public void Stop()
         {
-            CustomFileSystemWatcher reference = source as  CustomFileSystemWatcher;
-            var rules = reference.config.RuleItems;
+            watcher.EnableRaisingEvents = false;
+        }
+
+
+        private void OnAdd(object source, FileSystemEventArgs e)
+        {
+            var rules = config.RuleItems;
             bool isMatch = false;
             for (int i = 0; i < rules.Count; i++)
             {
                 var reg = new Regex(rules[i].NameTemplate, RegexOptions.IgnoreCase);
-                if (reg.IsMatch(e.Name))
+                if (reg.IsMatch(@e.Name))
                 {
-                    reference.MoveToFolder(e.Name, rules[i].Folder);
+                    MoveToFolder(e.Name, rules[i].Folder);
                     isMatch = true;
                     i = rules.Count; //Not beautiful exit from for loop
                 }
@@ -57,7 +67,7 @@ namespace FileWatcherConsole
 
             if (!isMatch)
             {
-                reference.MoveToFolder(e.Name, "123"); //TODO: store in resource file
+                MoveToFolder(e.Name, "123"); //TODO: store default directory in resource file
             }
         }
 

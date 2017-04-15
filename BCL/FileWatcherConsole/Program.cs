@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using FileWatcherConsole.Configuration;
+using System.Threading;
 
 namespace FileWatcherConsole
 {
@@ -13,11 +14,19 @@ namespace FileWatcherConsole
         static void Main(string[] args)
         {
             var conf = (CustomConfigSection)ConfigurationManager.GetSection("CustomSection");
-            var rules = conf.RuleItems;
-            var folder = conf.Folder.Path;
+            var fsw = new CustomFileSystemWatcher(conf);
 
-            var fsw = new CustomFileSystemWatcher();
-            
+            while (true)
+            {
+                fsw.Start();
+                Thread.Sleep(500);
+                if (Console.ReadKey().Key != ConsoleKey.Escape)
+                {
+                    fsw.Stop();
+                    break;
+                }
+            }
+
         }
     }
 }
