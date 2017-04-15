@@ -15,6 +15,9 @@ namespace FileWatcherConsole
             var conf = (CustomConfigSection)ConfigurationManager.GetSection("CustomSection");
             var rules = conf.RuleItems;
             var folder = conf.Folder.Path;
+
+            var fsw = new CustomFileSystemWatcher();
+            
         }
     }
 }
