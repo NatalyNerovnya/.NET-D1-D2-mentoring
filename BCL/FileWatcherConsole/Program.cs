@@ -20,7 +20,7 @@ namespace FileWatcherConsole
             {
                 fsw.Start();
                 Thread.Sleep(500);
-                if (Console.ReadKey().Key != ConsoleKey.Escape)
+                if (Console.ReadKey().Key == ConsoleKey.Escape)
                 {
                     fsw.Stop();
                     break;

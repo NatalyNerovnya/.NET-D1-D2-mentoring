@@ -67,7 +67,7 @@ namespace FileWatcherConsole
 
             if (!isMatch)
             {
-                MoveToFolder(e.Name, "123"); //TODO: store default directory in resource file
+                MoveToFolder(e.Name, @"c:\task_bcl\defaultFolder"); //TODO: store default directory in resource file
             }
         }
 
