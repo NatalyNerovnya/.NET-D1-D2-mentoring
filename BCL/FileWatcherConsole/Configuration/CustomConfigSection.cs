@@ -20,5 +20,11 @@ namespace FileWatcherConsole.Configuration
         {
             get { return ((FolderElement)(base["Folder"])); }
         }
+
+        [ConfigurationProperty("DefaultFolder")]
+        public DefaultFolderElement DefaultFolder
+        {
+            get { return ((DefaultFolderElement)(base["DefaultFolder"])); }
+        }
     }
 }
