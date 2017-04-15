@@ -32,7 +32,7 @@ namespace FileWatcherConsole
             watcher = new FileSystemWatcher();
             this.config = config;
             var path = config.Folder.Path;
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+            
 
             if (!Directory.Exists(path))
             {
@@ -93,7 +93,7 @@ namespace FileWatcherConsole
             var sourcePath = System.IO.Path.Combine(Path, file);
             var targetPath = System.IO.Path.Combine(folder, file);
             Directory.Move(sourcePath, targetPath);
-            Console.WriteLine("{0} {1}",logginng.Move, folder);
+            Console.WriteLine("{0} {1}", logginng.Move, folder);
         }
     }
 }
