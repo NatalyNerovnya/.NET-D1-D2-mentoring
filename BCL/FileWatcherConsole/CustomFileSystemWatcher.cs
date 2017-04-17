@@ -90,23 +90,17 @@ namespace FileWatcherConsole
 
         private void MoveToFolder(string file, string folder, string dateFormat)
         {
-            string date;
             if (!Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }
-            if(dateFormat == null)
-            {
-                date = DateTime.Now.ToShortDateString().ToString(CultureInfo.CreateSpecificCulture(config.CultulreInfo.Value));
-            }
-            else
-            {
-                date = DateTime.Now.ToString(dateFormat);
-            }
+            var date = dateFormat == null ? 
+                DateTime.Now.ToShortDateString().ToString(CultureInfo.CreateSpecificCulture(config.CultulreInfo.Value)) 
+                : DateTime.Now.ToString(dateFormat);
             var sourcePath = System.IO.Path.Combine(Path, file);
             var targetPath = System.IO.Path.Combine(folder, date + file);
             Directory.Move(sourcePath, targetPath);
-            Console.WriteLine("{0} {1}", logginng.Move, folder);
+            Console.WriteLine(@"{0} {1}", logginng.Move, folder);
         }
     }
 }
