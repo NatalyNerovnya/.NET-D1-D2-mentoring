@@ -1,14 +1,8 @@
 ﻿using FileWatcherConsole.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Resources;
 using logginng = FileWatcherConsole.Resources.Log;
 using System.Globalization;
 
@@ -103,7 +97,11 @@ namespace FileWatcherConsole
             }
             var date = dateFormat == null ? string.Empty : DateTime.Now.ToString(dateFormat);
             var sourcePath = System.IO.Path.Combine(Path, file);
-            var targetPath = System.IO.Path.Combine(folder, date + file);
+            var targetPath = System.IO.Path.Combine(folder, date + "_" + file);
+            if (File.Exists(targetPath))
+            {
+                targetPath =  Guid.NewGuid() + "_" + targetPath;
+            }
             Directory.Move(sourcePath, targetPath);
             Console.WriteLine(@"{0} {1}", logginng.Move, folder);
         }
