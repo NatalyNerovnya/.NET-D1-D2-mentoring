@@ -42,13 +42,18 @@ namespace FileWatcherConsole
             watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
                 | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
-            watcher.Changed += new FileSystemEventHandler(OnAdd);
             watcher.Created += new FileSystemEventHandler(OnAdd);
+
         }
 
         public void Start()
         {
+            foreach (var file in Directory.EnumerateFiles(config.Folder.Path))
+            {
+                Process(System.IO.Path.GetFileName(file));
+            }
             watcher.EnableRaisingEvents = true;
+
         }
 
         public void Stop()
@@ -62,19 +67,21 @@ namespace FileWatcherConsole
             Thread.CurrentThread.CurrentCulture = new CultureInfo(config.CultulreInfo.Value);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(config.CultulreInfo.Value);
 
-            if (e.ChangeType == WatcherChangeTypes.Created)
-            {
-                Console.WriteLine(logginng.NewFile);
-            }
+            Process(e.Name);
+        }
+
+        private void Process(string name)
+        {
+
             var rules = config.RuleItems;
             bool isMatch = false;
             for (int i = 0; i < rules.Count; i++)
             {
                 var reg = new Regex(rules[i].NameTemplate, RegexOptions.IgnoreCase);
-                if (reg.IsMatch(e.Name))
+                if (reg.IsMatch(name))
                 {
                     var dateFormat = rules[i].DateFormat;
-                    MoveToFolder(e.Name, rules[i].Folder, dateFormat);
+                    MoveToFolder(name, rules[i].Folder, dateFormat);
                     isMatch = true;
                     Console.WriteLine(logginng.FindedRule);
                     break;
@@ -84,7 +91,7 @@ namespace FileWatcherConsole
             if (!isMatch)
             {
                 Console.WriteLine(logginng.NotFindedRule);
-                MoveToFolder(e.Name, config.DefaultFolder.Path, null);
+                MoveToFolder(name, config.DefaultFolder.Path, null);
             }
         }
 
@@ -94,9 +101,7 @@ namespace FileWatcherConsole
             {
                 Directory.CreateDirectory(folder);
             }
-            var date = dateFormat == null ? 
-                DateTime.Now.ToShortDateString().ToString(CultureInfo.CreateSpecificCulture(config.CultulreInfo.Value)) 
-                : DateTime.Now.ToString(dateFormat);
+            var date = dateFormat == null ? string.Empty : DateTime.Now.ToString(dateFormat);
             var sourcePath = System.IO.Path.Combine(Path, file);
             var targetPath = System.IO.Path.Combine(folder, date + file);
             Directory.Move(sourcePath, targetPath);
