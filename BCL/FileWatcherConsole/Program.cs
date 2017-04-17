@@ -15,14 +15,15 @@ namespace FileWatcherConsole
         static void Main(string[] args)
         {
             var conf = (CustomConfigSection)ConfigurationManager.GetSection("CustomSection");
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
-            System.Threading.Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("ru-RU");
+            var culture = conf.CultulreInfo.Value;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
             var fsw = new CustomFileSystemWatcher(conf);
             fsw.Start();
 
             while (true)
-            {                
+            {
                 Thread.Sleep(500);
                 if (Console.ReadKey().Key == ConsoleKey.Escape)
                 {

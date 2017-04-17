@@ -20,5 +20,11 @@ namespace FileWatcherConsole.Configuration
         {
             get { return ((string)(base["path"])); }
         }
+
+        [ConfigurationProperty("dateFormat", IsKey = false)]
+        public string DateFormat
+        {
+            get { return ((string)(base["dateFormat"])); }
+        }
     }
 }

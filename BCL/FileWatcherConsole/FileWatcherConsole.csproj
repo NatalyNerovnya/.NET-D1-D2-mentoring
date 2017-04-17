@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\CultureElement.cs" />
     <Compile Include="Configuration\CustomConfigSection.cs" />
     <Compile Include="Configuration\DefaultFolderElement.cs" />
     <Compile Include="CustomFileSystemWatcher.cs" />

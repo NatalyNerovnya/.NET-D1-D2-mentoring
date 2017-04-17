@@ -26,5 +26,11 @@ namespace FileWatcherConsole.Configuration
         {
             get { return ((DefaultFolderElement)(base["DefaultFolder"])); }
         }
+
+        [ConfigurationProperty("Culture")]
+        public CultureElement CultulreInfo
+        {
+            get { return ((CultureElement)(base["Culture"])); }
+        }
     }
 }
