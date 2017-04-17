@@ -96,12 +96,16 @@ namespace FileWatcherConsole
                 Directory.CreateDirectory(folder);
             }
             var date = dateFormat == null ? string.Empty : DateTime.Now.ToString(dateFormat);
+
             var sourcePath = System.IO.Path.Combine(Path, file);
-            var targetPath = System.IO.Path.Combine(folder, date + "_" + file);
+            var newFileName = date + "_" + file;
+
+            var targetPath = System.IO.Path.Combine(folder, newFileName);
             if (File.Exists(targetPath))
             {
-                targetPath =  Guid.NewGuid() + "_" + targetPath;
+                targetPath = System.IO.Path.Combine(folder, Guid.NewGuid() + "_" + newFileName);
             }
+
             Directory.Move(sourcePath, targetPath);
             Console.WriteLine(@"{0} {1}", logginng.Move, folder);
         }
