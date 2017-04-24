@@ -2,6 +2,7 @@
 
 namespace BadServise.Exceptions
 {
+    [Serializable]
     public class LocalException : Exception
     {
         public LocalException() : base() { }
