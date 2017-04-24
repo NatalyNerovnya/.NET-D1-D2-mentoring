@@ -1,4 +1,6 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Diagnostics;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -18,6 +20,14 @@ namespace ExceptionHandling
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+
+        protected void Application_Error(Object sender, EventArgs e)
+        {
+            Exception error = Server.GetLastError();
+            var str = String.Format("{0}: {1}. \n {2}", error.Data, error.StackTrace, error.Message);
+            Console.WriteLine(str);
+            Debug.Print(str);
         }
     }
 }
