@@ -34,13 +34,13 @@ namespace MEFContainer
             }
         }
 
-        public void ResolveProperties(Type type)
+        public void ResolveProperties(object instance)
         {
-            foreach (var property in type.GetProperties())
+            foreach (var property in instance.GetType().GetProperties())
             {
                 if (property.IsDefined(typeof(ImportAttribute)))
                 {
-                    property.SetValue(type, Resolve(type));
+                    property.SetValue(instance, Resolve(instance.GetType()));
                 }
             }
         }
