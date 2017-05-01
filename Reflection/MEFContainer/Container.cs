@@ -21,8 +21,7 @@ namespace MEFContainer
 
         public T Resolve<T>()
         {
-            Type type = mapper[typeof(T)];
-            return (T)Resolve(type);
+            return (T)Resolve(typeof(T));
         }
 
         private object Resolve(Type type)
@@ -39,6 +38,7 @@ namespace MEFContainer
             {
                 return ctorInfo.Invoke(ResolveParameters(parameters).ToArray());
             }
+
         }
 
         private IEnumerable<object> ResolveParameters(IEnumerable<ParameterInfo> parameters)
