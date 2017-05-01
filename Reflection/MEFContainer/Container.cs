@@ -14,9 +14,34 @@ namespace MEFContainer
             mapper = new Dictionary<Type, Type>();
         }
 
+        public void AddAssembly(Assembly assembly)
+        {
+            var exportTypes = assembly.ExportedTypes.Where(t => t.IsClass || t.IsInterface);
+            foreach(var type in exportTypes)
+            {
+                var export = type.GetCustomAttribute<ExportAttribute>();
+                if(export != null)
+                {
+                   if (export.ExportType != null)
+                    {
+                        Register(export.ExportType, type);
+                    }
+                    else
+                    {
+                        Register(type, type);
+                    }
+                }
+            }
+        }
+
         public void Register<TKey,TValue>()
         {
             mapper.Add(typeof(TKey), typeof(TValue));
+        }
+
+        public void Register(Type type, Type baseType)
+        {
+            mapper.Add(type, baseType);
         }
 
         public T Resolve<T>()

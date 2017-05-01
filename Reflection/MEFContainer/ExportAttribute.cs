@@ -4,7 +4,7 @@ namespace MEFContainer
 {
     public class ExportAttribute : Attribute
     {
-        Type  ExportType{ get; set; }
+        public Type  ExportType{ get; set; }
 
         public ExportAttribute()
         {

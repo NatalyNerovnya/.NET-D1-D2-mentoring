@@ -1,5 +1,4 @@
-﻿using System;
-using MEFContainer;
+﻿using MEFContainer;
 
 namespace CustomTypes
 {

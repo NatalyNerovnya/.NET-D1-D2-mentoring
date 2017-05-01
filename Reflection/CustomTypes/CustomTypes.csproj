@@ -43,8 +43,16 @@
     <Compile Include="IThing.cs" />
     <Compile Include="IThingParameter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimplyClass.cs" />
+    <Compile Include="SimplyClassWithInterface.cs" />
     <Compile Include="Thing.cs" />
     <Compile Include="ThingParameter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MEFContainer\MEFContainer.csproj">
+      <Project>{6a6d7b38-8cc2-493e-94e0-b31fbb48654b}</Project>
+      <Name>MEFContainer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
