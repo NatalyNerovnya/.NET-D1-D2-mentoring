@@ -34,6 +34,17 @@ namespace MEFContainer
             }
         }
 
+        public void ResolveProperties(Type type)
+        {
+            foreach (var property in type.GetProperties())
+            {
+                if (property.IsDefined(typeof(ImportAttribute)))
+                {
+                    property.SetValue(type, Resolve(type));
+                }
+            }
+        }
+
         public void Register<TKey,TValue>()
         {
             mapper.Add(typeof(TKey), typeof(TValue));
