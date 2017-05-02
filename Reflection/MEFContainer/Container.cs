@@ -55,6 +55,16 @@ namespace MEFContainer
             mapper.Add(type, baseType);
         }
 
+        public void AddType(Type type)
+        {
+            AddType(type, type);    
+        }
+
+        public void AddType(Type targetType, Type sourceType)
+        {
+            Register(sourceType, targetType);
+        }
+
         public T Resolve<T>()
         {
             return (T)Resolve(typeof(T));
