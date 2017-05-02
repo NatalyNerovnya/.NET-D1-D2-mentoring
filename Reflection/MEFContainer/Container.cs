@@ -70,9 +70,13 @@ namespace MEFContainer
                 resolvedType = type;
             }
             var ctorInfo = resolvedType.GetConstructors().FirstOrDefault();
-            var parameters = ctorInfo?.GetParameters();
+            if (ctorInfo != null)
+            {
+                var parameters = ctorInfo.GetParameters();
 
-            return parameters != null && parameters.Any() ?  ctorInfo?.Invoke(ResolveParameters(parameters).ToArray()) : Activator.CreateInstance(resolvedType);
+                return parameters.Any() ?  ctorInfo.Invoke(ResolveParameters(parameters).ToArray()) : Activator.CreateInstance(resolvedType);
+            }
+            return Activator.CreateInstance(resolvedType);
         }
 
         private IEnumerable<object> ResolveParameters(IEnumerable<ParameterInfo> parameters)
@@ -82,7 +86,6 @@ namespace MEFContainer
 
         private void ResolveProperties(object instance)
         {
-            var props = instance.GetType().GetProperties();
             foreach (var property in instance.GetType().GetProperties())
             {
                 if (property.IsDefined(typeof(ImportAttribute)))
