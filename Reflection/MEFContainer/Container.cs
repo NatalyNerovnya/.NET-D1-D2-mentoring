@@ -17,12 +17,12 @@ namespace MEFContainer
         public void AddAssembly(Assembly assembly)
         {
             var exportTypes = assembly.ExportedTypes.Where(t => t.IsClass || t.IsInterface);
-            foreach(var type in exportTypes)
+            foreach (var type in exportTypes)
             {
                 var export = type.GetCustomAttribute<ExportAttribute>();
-                if(export != null)
+                if (export != null)
                 {
-                   if (export.ExportType != null)
+                    if (export.ExportType != null)
                     {
                         Register(export.ExportType, type);
                     }
@@ -34,18 +34,7 @@ namespace MEFContainer
             }
         }
 
-        public void ResolveProperties(object instance)
-        {
-            foreach (var property in instance.GetType().GetProperties())
-            {
-                if (property.IsDefined(typeof(ImportAttribute)))
-                {
-                    property.SetValue(instance, Resolve(instance.GetType()));
-                }
-            }
-        }
-
-        public void Register<TKey,TValue>()
+        public void Register<TKey, TValue>()
         {
             mapper.Add(typeof(TKey), typeof(TValue));
         }
@@ -57,7 +46,7 @@ namespace MEFContainer
 
         public void AddType(Type type)
         {
-            AddType(type, type);    
+            AddType(type, type);
         }
 
         public void AddType(Type targetType, Type sourceType)
@@ -67,29 +56,40 @@ namespace MEFContainer
 
         public T Resolve<T>()
         {
-            return (T)Resolve(typeof(T));
+            var instance = (T)Resolve(typeof(T));
+            ResolveProperties(instance);
+            return instance;
         }
 
         private object Resolve(Type type)
         {
-            var resolvedType = mapper[type];
-            var ctorInfo = resolvedType.GetConstructors().First();
-            var parameters = ctorInfo.GetParameters();
-
-            if (!parameters.Any())
+            Type resolvedType;
+            if (mapper.TryGetValue(type, out resolvedType) == false)
             {
-                return Activator.CreateInstance(resolvedType);
+                Register(type, type);
+                resolvedType = type;
             }
-            else
-            {
-                return ctorInfo.Invoke(ResolveParameters(parameters).ToArray());
-            }
+            var ctorInfo = resolvedType.GetConstructors().FirstOrDefault();
+            var parameters = ctorInfo?.GetParameters();
 
+            return parameters != null && parameters.Any() ?  ctorInfo?.Invoke(ResolveParameters(parameters).ToArray()) : Activator.CreateInstance(resolvedType);
         }
 
         private IEnumerable<object> ResolveParameters(IEnumerable<ParameterInfo> parameters)
         {
             return parameters.Select(p => Resolve(p.ParameterType)).ToList();
+        }
+
+        private void ResolveProperties(object instance)
+        {
+            var props = instance.GetType().GetProperties();
+            foreach (var property in instance.GetType().GetProperties())
+            {
+                if (property.IsDefined(typeof(ImportAttribute)))
+                {
+                    property.SetValue(instance, Resolve(property.PropertyType));
+                }
+            }
         }
     }
 }

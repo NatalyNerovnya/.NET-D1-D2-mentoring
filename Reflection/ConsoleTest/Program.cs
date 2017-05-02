@@ -16,9 +16,7 @@ namespace ConsoleTest
             container.Register<IThing, Thing>();
             container.Register<IThingParameter, ThingParameter>();
             var simple = container.Resolve<SimplyClass>();
-            container.ResolveProperties(simple);
             var simpleWithInterface = container.Resolve<ISimplyClassWithInterface>();
-            container.ResolveProperties(simpleWithInterface);
             var thing = container.Resolve<IThing>();
             
             Console.ReadKey();
