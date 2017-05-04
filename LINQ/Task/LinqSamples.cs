@@ -4,13 +4,8 @@
 //
 //Copyright (C) Microsoft Corporation.  All rights reserved.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using SampleSupport;
 using Task.Data;
 
@@ -18,48 +13,50 @@ using Task.Data;
 
 namespace SampleQueries
 {
-	[Title("LINQ Module")]
-	[Prefix("Linq")]
-	public class LinqSamples : SampleHarness
-	{
+    [Title("LINQ Module")]
+    [Prefix("Linq")]
+    public class LinqSamples : SampleHarness
+    {
 
-		private DataSource dataSource = new DataSource();
+        private DataSource dataSource = new DataSource();
+        delegate IEnumerable del(int i);
 
-		[Category("Restriction Operators")]
-		[Title("Where - Task 1")]
-		[Description("This sample uses the where clause to find all elements of an array with a value less than 5.")]
-		public void Linq1()
-		{
-			int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+        [Category("MAX")]
+        [Title("Task 1")]
+        [Description("All customers with sum of orders greater than X")]
 
-			var lowNums =
-				from num in numbers
-				where num < 5
-				select num;
+        public void Linq1()
+        {
 
-			Console.WriteLine("Numbers < 5:");
-			foreach (var x in lowNums)
-			{
-				Console.WriteLine(x);
-			}
-		}
+            del myDelegate = total => dataSource.Customers
+                .Where(c => c.Orders.Sum(t => t.Total) > total)
+                .Select(c => c.CustomerID);
 
-		[Category("Restriction Operators")]
-		[Title("Where - Task 2")]
-		[Description("This sample return return all presented in market products")]
 
-		public void Linq2()
-		{
-			var products =
-				from p in dataSource.Products
-				where p.UnitsInStock > 0
-				select p;
+            var x = 5000;
+            var customers5000 = myDelegate(x);
 
-			foreach (var p in products)
-			{
-				ObjectDumper.Write(p);
-			}
-		}
+            ObjectDumper.Write("With total x = 5000");
+            foreach (var c in customers5000)
+            {
+                ObjectDumper.Write(c);
+            }
 
-	}
+            x = 20000;
+            var customers20000 = myDelegate(x);
+            ObjectDumper.Write("With total x = 20000");
+            foreach (var c in customers20000)
+            {
+                ObjectDumper.Write(c);
+            }
+
+            x = 100000;
+            var customers100000 = myDelegate(x);
+            ObjectDumper.Write("With total x = 100000");
+            foreach (var c in customers100000)
+            {
+                ObjectDumper.Write(c);
+            }
+        }
+    }
 }

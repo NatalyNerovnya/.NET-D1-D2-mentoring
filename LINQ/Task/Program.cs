@@ -8,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using SampleSupport;
-using SampleQueries;
-using System.IO;
 
 // See the ReadMe.html for additional information
 namespace SampleQueries
@@ -30,7 +28,7 @@ namespace SampleQueries
 						
 			Application.EnableVisualStyles();
 				
-			using (SampleForm form = new SampleForm("HomeWork - Mihail Romanov", harnesses))
+			using (SampleForm form = new SampleForm("HomeWork - Natallia Nerovnya", harnesses))
 			{
 				form.ShowDialog();
 			}
