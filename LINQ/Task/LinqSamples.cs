@@ -21,7 +21,7 @@ namespace SampleQueries
         private DataSource dataSource = new DataSource();
         delegate IEnumerable del(int i);
 
-        [Category("MAX")]
+        [Category("LINQ")]
         [Title("Task 1")]
         [Description("All customers with sum of orders greater than X")]
 
@@ -54,6 +54,41 @@ namespace SampleQueries
             var customers100000 = myDelegate(x);
             ObjectDumper.Write("With total x = 100000");
             foreach (var c in customers100000)
+            {
+                ObjectDumper.Write(c);
+            }
+        }
+
+        [Category("LINQ")]
+        [Title("Task 2")]
+        [Description("Suppliers from the same country")]
+
+        public void Linq2()
+        {
+//            Для каждого клиента составьте список поставщиков, находящихся в той же стране и том же 
+//городе. Сделайте задания с использованием группировки и без.
+
+            var suppliersCountries = dataSource.Suppliers.Select(s => s.Country).Distinct();
+            //foreach (var c in customers100000)
+            //{
+            //    ObjectDumper.Write(c);
+            //}
+        }
+
+        [Category("LINQ")]
+        [Title("Task 3")]
+        [Description("Customers with order greater than X")]
+
+        public void Linq3()
+        {
+            //Найдите всех клиентов, у которых были заказы, превосходящие по сумме величину X
+            var x = 10000;
+
+            var customers = dataSource.Customers
+                .Where(c => c.Orders
+                    .Where(o => o.Total > x).ToArray().Length > 0)
+                .Select(c => c.CompanyName);
+            foreach (var c in customers)
             {
                 ObjectDumper.Write(c);
             }
