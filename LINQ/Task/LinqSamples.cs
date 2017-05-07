@@ -8,6 +8,7 @@ using System.Collections;
 using System.Linq;
 using SampleSupport;
 using Task.Data;
+using System;
 
 // Version Mad01
 
@@ -111,6 +112,18 @@ namespace SampleQueries
         {
 //            Выдайте список клиентов с указанием, начиная с какого месяца какого года они стали 
 //клиентами (принять за таковые месяц и год самого первого заказа)
+            var customers = dataSource.Customers.Select(c => new 
+            { 
+                Customer = c.CompanyName,
+                Date = c.Orders.Any() ? 
+                    c.Orders.DefaultIfEmpty().OrderBy(o => o.OrderDate).FirstOrDefault().OrderDate : 
+                    new DateTime()
+            });
+
+            foreach (var c in customers)
+            {
+                ObjectDumper.Write(c.Customer + ":  " + c.Date);
+            }
             
         }
 
