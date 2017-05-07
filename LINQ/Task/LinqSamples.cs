@@ -167,6 +167,20 @@ namespace SampleQueries
             {
                 ObjectDumper.Write(c);
             }
+        }
+
+        [Category("LINQ")]
+        [Title("Task 7")]
+        [Description("Сгруппируйте все продукты по категориям, внутри &ndash; по наличию на складе, внутри последней группы отсортируйте по стоимости")]
+
+        public void Linq7()
+        {
+            var products = dataSource.Products.OrderBy(p => p.Category).ThenBy(p => p.UnitsInStock).ThenBy(p => p.UnitPrice);
+
+            foreach (var c in products)
+            {
+                ObjectDumper.Write(c.Category + "  " + c.UnitsInStock + "  " + c.UnitPrice);
+            }
 
         }
     }
