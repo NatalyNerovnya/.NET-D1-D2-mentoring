@@ -146,6 +146,27 @@ namespace SampleQueries
             {
                 ObjectDumper.Write(c.Customer + ":  " + c.Date.ToShortDateString());
             }
+        }
+
+        [Category("LINQ")]
+        [Title("Task 6")]
+        [Description("Укажите всех клиентов, у которых указан нецифровой почтовый код или не заполнен "+
+            "регион или в телефоне не указан код оператора (для простоты считаем, что это "+
+            "равнозначно &laquo;нет круглых скобочек в начале&raquo;).")]
+
+        public void Linq6()
+        {
+            var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+            var operatorCodeSymbols = new char[] { '(', ')' };
+            var customers = dataSource.Customers
+                .Where(c => (!string.IsNullOrEmpty(c.PostalCode) && c.PostalCode.IndexOfAny(letters) > -1)
+                    || string.IsNullOrEmpty(c.Region)
+                    || c.Phone.IndexOfAny(operatorCodeSymbols) == -1).Select(c => c.CompanyName);
+
+            foreach (var c in customers)
+            {
+                ObjectDumper.Write(c);
+            }
 
         }
     }
