@@ -122,7 +122,7 @@ namespace SampleQueries
 
             foreach (var c in customers)
             {
-                ObjectDumper.Write(c.Customer + ":  " + c.Date);
+                ObjectDumper.Write(c.Customer + ":  " + c.Date.ToShortDateString());
             }
             
         }
@@ -133,8 +133,19 @@ namespace SampleQueries
 
         public void Linq5()
         {
-//            Сделайте предыдущее задание, но выдайте список отсортированным по году, месяцу, 
-//оборотам клиента (от максимального к минимальному) и имени клиента
+            //            Сделайте предыдущее задание, но выдайте список отсортированным по году, месяцу и имени клиента
+            var customers = dataSource.Customers.Select(c => new
+            {
+                Customer = c.CompanyName,
+                Date = c.Orders.Any() ?
+                    c.Orders.DefaultIfEmpty().OrderBy(o => o.OrderDate).FirstOrDefault().OrderDate :
+                    new DateTime()
+            }).OrderBy(c => c.Date.Year).ThenBy(c => c.Date.Month).ThenBy(c => c.Customer);
+
+            foreach (var c in customers)
+            {
+                ObjectDumper.Write(c.Customer + ":  " + c.Date.ToShortDateString());
+            }
 
         }
     }
