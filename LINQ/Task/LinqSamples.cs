@@ -65,14 +65,22 @@ namespace SampleQueries
 
         public void Linq2()
         {
-//            Для каждого клиента составьте список поставщиков, находящихся в той же стране и том же 
-//городе. Сделайте задания с использованием группировки и без.
+//            Для каждого клиента составьте список поставщиков, находящихся в той же стране и том же городе.
 
-            var suppliersCountries = dataSource.Suppliers.Select(s => s.Country).Distinct();
-            //foreach (var c in customers100000)
-            //{
-            //    ObjectDumper.Write(c);
-            //}
+            var suppliersCountries = from suppliers in dataSource.Suppliers
+                                     join customers in dataSource.Customers on suppliers.Country equals customers.Country
+                                     select new
+                                     {
+                                         Country = suppliers.Country,
+                                         Supplier = suppliers.SupplierName,
+                                         Customer = customers.CompanyName
+                                     };
+
+
+            foreach (var c in suppliersCountries)
+            {
+                ObjectDumper.Write(c);
+            }
         }
 
         [Category("LINQ")]
@@ -92,6 +100,29 @@ namespace SampleQueries
             {
                 ObjectDumper.Write(c);
             }
+        }
+
+
+        [Category("LINQ")]
+        [Title("Task 4")]
+        [Description("Customers with the date of the first order")]
+
+        public void Linq4()
+        {
+//            Выдайте список клиентов с указанием, начиная с какого месяца какого года они стали 
+//клиентами (принять за таковые месяц и год самого первого заказа)
+            
+        }
+
+        [Category("LINQ")]
+        [Title("Task 5")]
+        [Description("Customers with the sorted date of the first order")]
+
+        public void Linq5()
+        {
+//            Сделайте предыдущее задание, но выдайте список отсортированным по году, месяцу, 
+//оборотам клиента (от максимального к минимальному) и имени клиента
+
         }
     }
 }
