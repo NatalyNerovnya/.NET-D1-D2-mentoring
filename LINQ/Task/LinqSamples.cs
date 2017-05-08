@@ -66,7 +66,7 @@ namespace SampleQueries
 
         public void Linq2()
         {
-//            Для каждого клиента составьте список поставщиков, находящихся в той же стране и том же городе.
+            //            Для каждого клиента составьте список поставщиков, находящихся в той же стране и том же городе.
 
             var suppliersCountries = from suppliers in dataSource.Suppliers
                                      join customers in dataSource.Customers on suppliers.Country equals customers.Country
@@ -110,13 +110,13 @@ namespace SampleQueries
 
         public void Linq4()
         {
-//            Выдайте список клиентов с указанием, начиная с какого месяца какого года они стали 
-//клиентами (принять за таковые месяц и год самого первого заказа)
-            var customers = dataSource.Customers.Select(c => new 
-            { 
+            //            Выдайте список клиентов с указанием, начиная с какого месяца какого года они стали 
+            //клиентами (принять за таковые месяц и год самого первого заказа)
+            var customers = dataSource.Customers.Select(c => new
+            {
                 Customer = c.CompanyName,
-                Date = c.Orders.Any() ? 
-                    c.Orders.DefaultIfEmpty().OrderBy(o => o.OrderDate).FirstOrDefault().OrderDate : 
+                Date = c.Orders.Any() ?
+                    c.Orders.DefaultIfEmpty().OrderBy(o => o.OrderDate).FirstOrDefault().OrderDate :
                     new DateTime()
             });
 
@@ -124,7 +124,7 @@ namespace SampleQueries
             {
                 ObjectDumper.Write(c.Customer + ":  " + c.Date.ToShortDateString());
             }
-            
+
         }
 
         [Category("LINQ")]
@@ -150,8 +150,8 @@ namespace SampleQueries
 
         [Category("LINQ")]
         [Title("Task 6")]
-        [Description("Укажите всех клиентов, у которых указан нецифровой почтовый код или не заполнен "+
-            "регион или в телефоне не указан код оператора (для простоты считаем, что это "+
+        [Description("Укажите всех клиентов, у которых указан нецифровой почтовый код или не заполнен " +
+            "регион или в телефоне не указан код оператора (для простоты считаем, что это " +
             "равнозначно &laquo;нет круглых скобочек в начале&raquo;).")]
 
         public void Linq6()
@@ -181,6 +181,58 @@ namespace SampleQueries
             {
                 ObjectDumper.Write(c.Category + "  " + c.UnitsInStock + "  " + c.UnitPrice);
             }
+        }
+
+        [Category("LINQ")]
+        [Title("Task 8")]
+        [Description("Сгруппируйте товары по группам &laquo;дешевые&raquo;, &laquo;средняя цена&raquo;, &laquo;дорогие&raquo;. Границы каждой группы задайте сами")]
+
+        public void Linq8()
+        {
+            var smaillPrice = 5;
+            var mediumPrice = 15;
+
+            var products1 = dataSource.Products.Where(p => p.UnitPrice <= smaillPrice);
+            var products2 = dataSource.Products.Where(p => p.UnitPrice <= mediumPrice && p.UnitPrice >= smaillPrice);
+            var products3 = dataSource.Products.Where(p => p.UnitPrice >= mediumPrice);
+
+            var products = products1.Concat(products2).Concat(products3);
+
+            foreach (var c in products)
+            {
+                ObjectDumper.Write(c.ProductName + "  " + c.UnitPrice);
+            }
+        }
+
+        [Category("LINQ")]
+        [Title("Task 9")]
+        [Description("Рассчитайте среднюю прибыльность каждого города (среднюю сумму заказа " +
+                  "по всем клиентам из данного города) и среднюю интенсивность (среднее количество" +
+                  "заказов, приходящееся на клиента из каждого города)")]
+        public void Linq9()
+        {
+            var cities = dataSource.Customers.Select(c => c.City).Distinct().ToArray();
+            var profitability = new decimal[cities.Length];
+            var intensity = new double[cities.Length];
+            for (int i = 0; i < cities.Length; i++)
+            {
+                var customersInTheCity = dataSource.Customers.Where(c => c.City == cities[i] && c.Orders.Any());
+                profitability[i] = customersInTheCity.Select(c => c.Orders.Average(x => x.Total)).FirstOrDefault();
+                intensity[i] = customersInTheCity.Average(c => c.Orders.Length);
+            }
+            for (int i = 0; i < cities.Length; i++)
+            {
+                ObjectDumper.Write(cities[i] + "   " + profitability[i] + "   " + intensity[i]);
+            }
+        }
+
+        [Category("LINQ")]
+        [Title("Task 10")]
+        [Description(" Сделайте среднегодовую статистику активности клиентов по месяцам (без учета года)," +
+                     "статистику по годам, по годам и месяцам (т.е. когда один месяц в разные годы имеет своё значение).")]
+
+        public void Linq10()
+        {
 
         }
     }
