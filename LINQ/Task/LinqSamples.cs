@@ -211,28 +211,6 @@ namespace SampleQueries
                   "заказов, приходящееся на клиента из каждого города)")]
         public void Linq9()
         {
-            var cities = dataSource.Customers.Select(c => c.City).Distinct().ToArray();
-            var profitability = new decimal[cities.Length];
-            var intensity = new double[cities.Length];
-            for (int i = 0; i < cities.Length; i++)
-            {
-                var customersInTheCity = dataSource.Customers.Where(c => c.City == cities[i] && c.Orders.Any());
-                profitability[i] = customersInTheCity.Select(c => c.Orders.Average(x => x.Total)).FirstOrDefault();
-                intensity[i] = customersInTheCity.Average(c => c.Orders.Length);
-            }
-            for (int i = 0; i < cities.Length; i++)
-            {
-                ObjectDumper.Write(cities[i] + "   " + profitability[i] + "   " + intensity[i]);
-            }
-        }
-
-        [Category("LINQ")]
-        [Title("Task 10")]
-        [Description(" Сделайте среднегодовую статистику активности клиентов по месяцам (без учета года)," +
-                     "статистику по годам, по годам и месяцам (т.е. когда один месяц в разные годы имеет своё значение).")]
-
-        public void Linq10()
-        {
             var citiesInfo = dataSource.Customers
                 .GroupBy(x => x.City,
                     (city, customers) =>
@@ -251,6 +229,16 @@ namespace SampleQueries
             {
                 Console.WriteLine(cityInfo.City + "    " + cityInfo.Profitability + "    " + cityInfo.Intensity);
             }
+        }
+
+        [Category("LINQ")]
+        [Title("Task 10")]
+        [Description(" Сделайте среднегодовую статистику активности клиентов по месяцам (без учета года)," +
+                     "статистику по годам, по годам и месяцам (т.е. когда один месяц в разные годы имеет своё значение).")]
+
+        public void Linq10()
+        {
+
         }
     }
 }
