@@ -235,9 +235,22 @@ namespace SampleQueries
         [Title("Task 10")]
         [Description(" Сделайте среднегодовую статистику активности клиентов по месяцам (без учета года)," +
                      "статистику по годам, по годам и месяцам (т.е. когда один месяц в разные годы имеет своё значение).")]
-
         public void Linq10()
         {
+            var statistics = dataSource.Customers.SelectMany(x => x.Orders, (customer, order) => new
+                                    {
+                                        Month = order.OrderDate.Month,
+                                        Order = order
+                                    }).GroupBy(x => x.Month, (month, orders) => new
+                                    {
+                                        Month = month,
+                                        Amount = orders.Count()
+                                    }).OrderBy(x => x.Month);
+
+            foreach (var info in statistics)
+            {
+                Console.WriteLine(info.Month + "   " + info.Amount);
+            }
 
         }
     }
