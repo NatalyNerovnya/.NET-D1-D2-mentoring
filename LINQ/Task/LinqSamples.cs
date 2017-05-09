@@ -233,7 +233,24 @@ namespace SampleQueries
 
         public void Linq10()
         {
+            var citiesInfo = dataSource.Customers
+                .GroupBy(x => x.City,
+                    (city, customers) =>
+                    {
+                        var totalOrders = customers.Sum(y => y.Orders.Length);
 
+                        return new
+                        {
+                            City = city,
+                            Profitability = customers.Sum(y => y.Orders.Sum(z => z.Total)) / totalOrders,
+                            Intensity = totalOrders / customers.Count()
+                        };
+                    });
+
+            foreach (var cityInfo in citiesInfo)
+            {
+                Console.WriteLine(cityInfo.City + "    " + cityInfo.Profitability + "    " + cityInfo.Intensity);
+            }
         }
     }
 }
