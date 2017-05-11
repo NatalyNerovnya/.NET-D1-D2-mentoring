@@ -21,20 +21,20 @@ namespace SampleQueries
         private DataSource dataSource = new DataSource();
         delegate IEnumerable del(int i);
 
-        [Category("MAX")]
+        [Category("The only category")]
         [Title("Task 1")]
         [Description("All customers with sum of orders greater than X")]
 
         public void Linq1()
         {
 
-            del myDelegate = total => dataSource.Customers
+            del vipCustomers = total => dataSource.Customers
                 .Where(c => c.Orders.Sum(t => t.Total) > total)
                 .Select(c => c.CustomerID);
 
 
             var x = 5000;
-            var customers5000 = myDelegate(x);
+            var customers5000 = vipCustomers(x);
 
             ObjectDumper.Write("With total x = 5000");
             foreach (var c in customers5000)
@@ -43,7 +43,7 @@ namespace SampleQueries
             }
 
             x = 20000;
-            var customers20000 = myDelegate(x);
+            var customers20000 = vipCustomers(x);
             ObjectDumper.Write("With total x = 20000");
             foreach (var c in customers20000)
             {
@@ -51,8 +51,22 @@ namespace SampleQueries
             }
 
             x = 100000;
-            var customers100000 = myDelegate(x);
+            var customers100000 = vipCustomers(x);
             ObjectDumper.Write("With total x = 100000");
+            foreach (var c in customers100000)
+            {
+                ObjectDumper.Write(c);
+            }
+        }
+
+        [Category("The only category")]
+        [Title("Task 2")]
+        [Description("List of supplier from the same country")]
+
+        public void Linq2()
+        {
+            var suppliers = dataSource.
+            
             foreach (var c in customers100000)
             {
                 ObjectDumper.Write(c);
