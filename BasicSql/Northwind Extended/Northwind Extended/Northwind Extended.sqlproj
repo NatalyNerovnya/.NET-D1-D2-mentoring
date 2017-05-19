@@ -75,7 +75,7 @@
     <Build Include="dbo\Tables\Order Details_1.sql" />
     <Build Include="dbo\Tables\CustomerCustomerDemo_1.sql" />
     <Build Include="dbo\Tables\CustomerDemographics_1.sql" />
-    <Build Include="dbo\Tables\Region_1.sql" />
+    <Build Include="dbo\Tables\Regions_1.sql" />
     <Build Include="dbo\Tables\Territories_1.sql" />
     <Build Include="dbo\Tables\EmployeeTerritories_1.sql" />
     <Build Include="dbo\Views\Customer and Suppliers by City_1.sql" />
@@ -102,5 +102,8 @@
     <Build Include="dbo\Stored Procedures\CustOrderHist_1.sql" />
     <Build Include="dbo\Stored Procedures\SalesByCategory_1.sql" />
     <Build Include="dbo\Tables\Card.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment1.sql" />
   </ItemGroup>
 </Project>
