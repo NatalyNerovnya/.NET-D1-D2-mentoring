@@ -11,5 +11,9 @@
         void AddOrder(Order order);
 
         bool DeleteOrder(int id);
+
+        bool MarkAsDone(int id);
+
+        bool SendToProcess(int id);
     }
 }

@@ -137,12 +137,59 @@
             }
         }
 
+        public bool MarkAsDone(int id)
+        {
+            return this.SetDate(OrderStatus.Completed, "ShippedDate", id);
+        }
+
+        public bool SendToProcess(int id)
+        {
+            return this.SetDate(OrderStatus.InProcess, "OrderDate", id);
+        }
+
+        private bool SetDate(OrderStatus status, string columnName, int id)
+        {
+            using (var connection = this.factory.CreateConnection())
+            {
+                connection.ConnectionString = this.connectionString;
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    this.SetParameter("@id", id, command);
+                    var commandString = "select o.OrderId as id from Orders o where o.OrderId = @id";
+                    this.CreateCommandString(command, commandString);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (!reader.HasRows)
+                        {
+                            return false;
+                        }
+                    }
+
+                    var orderStatus = this.GetOrderWithDetails(id).Status;
+                    if (orderStatus != status)
+                    {
+                        this.SetParameter("@date", DateTime.Now, command);
+                        this.SetParameter("@column", columnName, command);
+                        var updateString = "update Orders set @column = @date where o.OrderID = @id;";
+                        this.CreateCommandString(command, updateString);
+                        command.ExecuteNonQuery();
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+        }
+
         private void SetParameter(string key, object value, DbCommand command)
         {
             var param = command.CreateParameter();
             param.ParameterName = key;
             param.Value = value;
         }
+
         private void CreateCommandString(DbCommand command, string commandString)
         {
             command.CommandType = CommandType.Text;
