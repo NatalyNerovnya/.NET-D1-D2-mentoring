@@ -7,5 +7,7 @@
         IEnumerable<Order> GetOrders();
 
         Order GetOrderWithDetails(int id);
+
+        void AddOrder(Order order);
     }
 }

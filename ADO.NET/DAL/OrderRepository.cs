@@ -18,7 +18,6 @@
             this.factory = DbProviderFactories.GetFactory(provider);
         }
 
-
         public IEnumerable<Order> GetOrders()
         {
             using (var connection = this.factory.CreateConnection())
@@ -56,9 +55,7 @@
 
                 using (var command = connection.CreateCommand())
                 {
-                    var param = command.CreateParameter();
-                    param.ParameterName = "@id";
-                    param.Value = id;
+                    this.SetParameter("@id", id, command);
 
                     var commandStringForOrderByID =
                         "select o.OrderId as id, o.OrderDate as orderDate, o.ShippedDate as shippedDate, " +
@@ -83,7 +80,36 @@
             }
             return order;
         }
-        
+
+        public void AddOrder(Order order)
+        {
+            using (var connection = this.factory.CreateConnection())
+            {
+                connection.ConnectionString = this.connectionString;
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    this.SetParameter("@shippedDate", order.ShippedDate, command);
+                    this.SetParameter("@orderDate", order.OrderDate, command);
+                    this.SetParameter("@customerId", order.OrderDetails.CustomerId, command);
+                    this.SetParameter("@employeeId", order.OrderDetails.EmployeeId, command);
+                    var commandString =
+                        "insert into Orders(CustomerID, EmployeeID, OrderDate, ShippedDate) " +
+                        "values(@customerId, @employeeId, @orderDate, @shippedDate)";
+                    this.CreateCommandString(command, commandString);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void SetParameter(string key, object value, DbCommand command)
+        {
+            var param = command.CreateParameter();
+            param.ParameterName = key;
+            param.Value = value;
+        }
         private void CreateCommandString(DbCommand command, string commandString)
         {
             command.CommandType = CommandType.Text;
