@@ -104,6 +104,39 @@
             }
         }
 
+        public bool DeleteOrder(int id)
+        {
+            using (var connection = this.factory.CreateConnection())
+            {
+                connection.ConnectionString = this.connectionString;
+                connection.Open();
+
+                using (var command = connection.CreateCommand())
+                {
+                    this.SetParameter("@id", id, command);
+                    var commandString = "select o.OrderId as id from Orders o where o.OrderId = @id";
+                    this.CreateCommandString(command, commandString);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (!reader.HasRows)
+                        {
+                            return false;
+                        }
+                    }
+
+                    var orderStatus = this.GetOrderWithDetails(id).Status;
+                    if (orderStatus == OrderStatus.InProcess || orderStatus == OrderStatus.New)
+                    {
+                        var deleteString = "delete from Orders o where o.OrderID = @id;";
+                        this.CreateCommandString(command, deleteString);
+                        command.ExecuteNonQuery();
+                        return true;
+                    }
+                    return false;
+                }
+            }
+        }
+
         private void SetParameter(string key, object value, DbCommand command)
         {
             var param = command.CreateParameter();

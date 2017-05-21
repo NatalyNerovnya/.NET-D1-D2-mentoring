@@ -9,5 +9,7 @@
         Order GetOrderWithDetails(int id);
 
         void AddOrder(Order order);
+
+        bool DeleteOrder(int id);
     }
 }
