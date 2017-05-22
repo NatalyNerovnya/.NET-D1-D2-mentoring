@@ -1,22 +1,23 @@
 ﻿namespace DAL.Tests
 {
+    using System.Linq;
+
     using DAL;
-    using System.Data.Common;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class OrderRepositoryTests
     {
-        //[TestMethod]
-        //public void GetOrders_ConnectionString_Orders()
-        //{
-        //    var factory = DbProviderFactories.GetFactory("SqlClient");
-        //    string connectionString =
-        //        "Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password = myPassword; ";
-        //    var repository = new OrderRepository(connectionString, factory);
+        private static string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+        [TestMethod]
+        public void GetOrders_ConnectionString_Orders()
+        {
+            var repository = new OrderRepository(connectionString, "System.Data.SqlClient");
 
-        //    var orders = repository.GetOrders();
-        //}
+            var orders = repository.GetOrders();
+
+            Assert.AreEqual(orders.Count(), 830);
+        }
     }
 }

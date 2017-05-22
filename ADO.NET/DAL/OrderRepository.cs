@@ -12,7 +12,7 @@
         private readonly string connectionString;
 
 
-        public OrderRepository(string connectionString, string provider = "SqlClient")
+        public OrderRepository(string connectionString, string provider = "System.Data.SqlClient")
         {
             this.connectionString = connectionString;
             this.factory = DbProviderFactories.GetFactory(provider);
@@ -215,8 +215,8 @@
             var order = new Order()
             {
                 Id = (int)reader["id"],
-                OrderDate = (DateTime)reader["orderDate"],
-                ShippedDate = (DateTime)reader["shippedDate"]
+                OrderDate = (reader["orderDate"] as DateTime?) ?? null,
+                ShippedDate = (reader["shippedDate"] as DateTime?) ?? null
             };
             if (reader.IsDBNull(1))
             {
