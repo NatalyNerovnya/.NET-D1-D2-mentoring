@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Data.Common;
+    using System.Linq;
 
     public class OrderRepository : IOrderRepository
     {
@@ -47,7 +48,7 @@
 
         public Order GetOrderWithDetails(int id)
         {
-            Order order;
+            Order order = new Order();
             using (var connection = this.factory.CreateConnection())
             {
                 connection.ConnectionString = this.connectionString;
@@ -59,11 +60,11 @@
 
                     var commandStringForOrderByID =
                         "select o.OrderId as id, o.OrderDate as orderDate, o.ShippedDate as shippedDate, " +
-                        "o.CustomerID as customerId, o.EmployeeID as employeeID" +
-                        "from Orders o" +
-                        "where o.OrderId = @id;" +
+                        "o.CustomerID as customerId, o.EmployeeID as employeeID " +
+                        "from Orders o " +
+                        "where o.OrderId = @id; " +
                         "select od.ProductId as productId, od.UnitPrice as unitPrice, od.Quantity as quantity " +
-                        "from [Order Details] where od.OrderID = @id;";
+                        "from [Order Details] od where od.OrderID = @id;";
                     this.CreateCommandString(command, commandStringForOrderByID);
 
                     using (var reader = command.ExecuteReader())
@@ -72,8 +73,10 @@
                         {
                             return null;
                         }
-
-                        order = this.ReadOrder(reader);
+                        if (reader.Read())
+                        {
+                            order = this.ReadOrder(reader);
+                        }
                         order.OrderDetails = this.ReadOrderDetails(reader);
                     }
                 }
@@ -94,6 +97,7 @@
                     this.SetParameter("@orderDate", order.OrderDate, command);
                     this.SetParameter("@customerId", order.OrderDetails.CustomerId, command);
                     this.SetParameter("@employeeId", order.OrderDetails.EmployeeId, command);
+
                     var commandString =
                         "insert into Orders(CustomerID, EmployeeID, OrderDate, ShippedDate) " +
                         "values(@customerId, @employeeId, @orderDate, @shippedDate)";
@@ -114,20 +118,10 @@
                 using (var command = connection.CreateCommand())
                 {
                     this.SetParameter("@id", id, command);
-                    var commandString = "select o.OrderId as id from Orders o where o.OrderId = @id";
-                    this.CreateCommandString(command, commandString);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (!reader.HasRows)
-                        {
-                            return false;
-                        }
-                    }
-
-                    var orderStatus = this.GetOrderWithDetails(id).Status;
+                    var orderStatus = this.GetOrders().FirstOrDefault(o => o.Id == id)?.Status;
                     if (orderStatus == OrderStatus.InProcess || orderStatus == OrderStatus.New)
                     {
-                        var deleteString = "delete from Orders o where o.OrderID = @id;";
+                        var deleteString = "delete from Orders where OrderID = @id;";
                         this.CreateCommandString(command, deleteString);
                         command.ExecuteNonQuery();
                         return true;
@@ -187,7 +181,8 @@
         {
             var param = command.CreateParameter();
             param.ParameterName = key;
-            param.Value = value;
+            param.Value = value ?? DBNull.Value;
+            command.Parameters.Add(param);
         }
 
         private void CreateCommandString(DbCommand command, string commandString)
@@ -203,10 +198,13 @@
                 CustomerId = (string)reader["customerId"],
                 EmployeeId = (int)reader["employeeID"]
             };
-            reader.NextResult();
-            details.ProductId = (int)reader["productId"];
-            details.Quantity = (int)reader["quantity"];
-            details.UnitPrice = (double)reader["unitPrice"];
+            if (reader.NextResult())
+            {
+                reader.Read();
+                details.ProductId = (int)reader["productId"];
+                details.Quantity = (short)reader["quantity"];
+                details.UnitPrice = (decimal)reader["unitPrice"];
+            }
             return details;
         }
 
@@ -218,11 +216,11 @@
                 OrderDate = (reader["orderDate"] as DateTime?) ?? null,
                 ShippedDate = (reader["shippedDate"] as DateTime?) ?? null
             };
-            if (reader.IsDBNull(1))
+            if (order.OrderDate == null)
             {
                 order.Status = OrderStatus.New;
             }
-            else if (reader.IsDBNull(2))
+            else if (order.ShippedDate == null)
             {
                 order.Status = OrderStatus.InProcess;
             }
