@@ -8,18 +8,14 @@
     [TestClass]
     public class OrderRepositoryTests
     {
-        private readonly string connectionString;
-
-        private readonly string provider;
 
         private readonly IOrderRepository repository;
 
         public OrderRepositoryTests()
         {
-            this.connectionString =
-                System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
-            this.provider = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ProviderName;
-            this.repository = new OrderRepository(this.connectionString, this.provider);
+            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+            var provider = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ProviderName;
+            this.repository = new OrderRepository(connectionString, provider);
 
         }
 
