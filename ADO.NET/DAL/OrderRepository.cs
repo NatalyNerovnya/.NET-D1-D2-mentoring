@@ -12,8 +12,7 @@
 
         private readonly string connectionString;
 
-
-        public OrderRepository(string connectionString, string provider = "System.Data.SqlClient")
+        public OrderRepository(string connectionString, string provider)
         {
             this.connectionString = connectionString;
             this.factory = DbProviderFactories.GetFactory(provider);

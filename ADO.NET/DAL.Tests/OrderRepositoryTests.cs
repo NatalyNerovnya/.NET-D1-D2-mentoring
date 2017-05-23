@@ -2,22 +2,31 @@
 {
     using System;
     using System.Linq;
-
     using DAL;
-
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
     public class OrderRepositoryTests
     {
-        private static string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+        private readonly string connectionString;
+
+        private readonly string provider;
+
+        private readonly IOrderRepository repository;
+
+        public OrderRepositoryTests()
+        {
+            this.connectionString =
+                System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+            this.provider = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ProviderName;
+            this.repository = new OrderRepository(connectionString, provider);
+
+        }
 
         [TestMethod]
         public void GetOrders_ConnectionString_Orders()
         {
-            var repository = new OrderRepository(connectionString, "System.Data.SqlClient");
-
-            var orders = repository.GetOrders();
+            var orders = this.repository.GetOrders();
 
             Assert.AreEqual(orders.Count(), 830);
         }
@@ -25,10 +34,8 @@
         [TestMethod]
         public void GetOrderWithDetails_OrderWithId10974_OrderWithDetails()
         {
-            var repository = new OrderRepository(connectionString, "System.Data.SqlClient");
-
             var id = 10974;
-            var order = repository.GetOrderWithDetails(id);
+            var order = this.repository.GetOrderWithDetails(id);
 
             Assert.AreEqual(order.Id, id);
             Assert.IsNotNull(order.OrderDetails);
@@ -38,8 +45,7 @@
         [TestMethod]
         public void AddOrder_EmptyOrder_NewOrderInDB()
         {
-            var repository = new OrderRepository(connectionString, "System.Data.SqlClient");
-            var oldOrders = repository.GetOrders();
+            var oldOrders = this.repository.GetOrders();
             string customerId = "LILAS";
             var order = new Order()
                             {
@@ -52,8 +58,8 @@
                                 ShippedDate = null
                             };
 
-            repository.AddOrder(order);
-            var orders = repository.GetOrders();
+            this.repository.AddOrder(order);
+            var orders = this.repository.GetOrders();
 
             Assert.AreEqual(orders.Count(), oldOrders.Count() + 1);
         }
@@ -61,12 +67,11 @@
         [TestMethod]
         public void DeleteOrder_LastCompletedOrderId_False()
         {
-            var repository = new OrderRepository(connectionString, "System.Data.SqlClient");
-            var oldOrders = repository.GetOrders();
+            var oldOrders = this.repository.GetOrders();
             var lastId = oldOrders.Where(o => o.Status == OrderStatus.Completed).OrderByDescending(o => o.Id).FirstOrDefault().Id;
 
-            var result = repository.DeleteOrder(lastId);
-            var orders = repository.GetOrders();
+            var result = this.repository.DeleteOrder(lastId);
+            var orders = this.repository.GetOrders();
 
             Assert.IsFalse(result);
             Assert.AreEqual(oldOrders.Count(), orders.Count());
@@ -76,12 +81,11 @@
         [TestMethod]
         public void DeleteOrder_LastNewOrderId_True()
         {
-            var repository = new OrderRepository(connectionString, "System.Data.SqlClient");
-            var oldOrders = repository.GetOrders();
+            var oldOrders = this.repository.GetOrders();
             var lastId = oldOrders.OrderByDescending(o => o.Id).FirstOrDefault().Id;
 
-            var result = repository.DeleteOrder(lastId);
-            var orders = repository.GetOrders();
+            var result = this.repository.DeleteOrder(lastId);
+            var orders = this.repository.GetOrders();
 
             Assert.IsTrue(result);
             Assert.AreEqual(oldOrders.Count() - 1, orders.Count());
