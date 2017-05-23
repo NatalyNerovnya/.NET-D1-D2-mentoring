@@ -19,7 +19,7 @@
             this.connectionString =
                 System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
             this.provider = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ProviderName;
-            this.repository = new OrderRepository(connectionString, provider);
+            this.repository = new OrderRepository(this.connectionString, this.provider);
 
         }
 
