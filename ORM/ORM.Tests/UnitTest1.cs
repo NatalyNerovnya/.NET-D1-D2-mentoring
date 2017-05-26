@@ -10,7 +10,7 @@ namespace ORM.Tests
     using Dapper;
     using Dapper.FluentMap;
 
-    using DAL.Mappers;
+    using ORM.Mappers;
 
     using ORM.Entities;
     using ORM.Mappers;
@@ -22,7 +22,7 @@ namespace ORM.Tests
         private readonly string connectionString = "Server=EPBYMINW0898;Database=Northwind;Trusted_Connection=True;";
 
         [TestMethod]
-        public void ListOfProductsWithcategoryAndSupplier()
+        public void ListOfProductsWithCategoryAndSupplier()
         {
             FluentMapper.Initialize(config =>
             {

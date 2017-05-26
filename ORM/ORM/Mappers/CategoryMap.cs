@@ -1,4 +1,4 @@
-﻿namespace DAL.Mappers
+﻿namespace ORM.Mappers
 {
     using Dapper.FluentMap.Mapping;
 
