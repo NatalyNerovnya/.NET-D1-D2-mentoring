@@ -1,25 +1,24 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace ORM.Tests
+﻿namespace ORM.Tests
 {
     using System.Collections.Generic;
     using System.Data.SqlClient;
     using System.Linq;
-
     using Dapper;
     using Dapper.FluentMap;
-
-    using ORM.Mappers;
-
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using ORM.Entities;
     using ORM.Mappers;
 
     [TestClass]
-    public class UnitTest1
+    public class UnitTest
     {
 
-        private readonly string connectionString = "Server=EPBYMINW0898;Database=Northwind;Trusted_Connection=True;";
+        private string connectionString;
+
+        public UnitTest()
+        {
+            this.connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["connectionString"].ConnectionString;
+        }
 
         [TestMethod]
         public void ListOfProductsWithCategoryAndSupplier()
@@ -30,6 +29,7 @@ namespace ORM.Tests
                 config.AddMap(new ProductMap());
                 config.AddMap(new CategoryMap());
             });
+
 
             List<Product> products;
             using (var db = new SqlConnection(this.connectionString))
@@ -79,6 +79,62 @@ namespace ORM.Tests
             Assert.AreEqual(expected.Supplier.ContactTitle, actual.Supplier.ContactTitle);
             Assert.AreEqual(expected.Supplier.CompanyName, actual.Supplier.CompanyName);
             Assert.AreEqual(expected.QuantityPerUnit, actual.QuantityPerUnit);
+        }
+
+        [TestMethod]
+        public void ListOfEmployeesWithTeritories()
+        {
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new EmployeeMap());
+            });
+
+            List<Employee> employees;
+            using (var db = new SqlConnection(this.connectionString))
+            {
+                employees = db.Query<Employee>("SELECT * FROM Employees").ToList();
+                foreach (var employee in employees)
+                {
+                    var emplTerritories =
+                        db.Query<EmployeeTerritory>(
+                            "SELECT * FROM EmployeeTerritories WHERE EmployeeID = " + employee.Id);
+                   employee.Territories = new List<Territory>();
+                    foreach (var id in emplTerritories)
+                    {
+                        var t =
+                            db.Query<Territory>("SELECT * FROM Territories WHERE TerritoryID = " + id.TerritoryID).FirstOrDefault();
+                        employee.Territories.Add(t);
+                    }
+                }
+            }
+
+            var actual = employees.FirstOrDefault(e => e.Id == 3);
+
+            var expected = new Employee()
+                               {
+                                   Id = 3,
+                                   LastName = "Leverling",
+                                   FirstName = "Janet",
+                                   Territories = new List<Territory>()
+                                                     {
+                                                         new Territory()
+                                                             {
+                                                                 RegionID = 4,
+                                                                 TerritoryDescription = "Atlanta                                           ",
+                                                                 TerritoryID = "30346"
+                                                             }
+                                                     }
+            };
+
+            Assert.IsNotNull(actual);
+            Assert.IsNotNull(actual.Territories);
+            Assert.AreEqual(4, actual.Territories.Count);
+            Assert.AreEqual(expected.Id, actual.Id);
+            Assert.AreEqual(expected.FirstName, actual.FirstName);
+            Assert.AreEqual(expected.LastName, actual.LastName);
+            Assert.AreEqual(expected.Territories.First().RegionID, actual.Territories.First().RegionID);
+            Assert.AreEqual(expected.Territories.First().TerritoryDescription, actual.Territories.First().TerritoryDescription);
+            Assert.AreEqual(expected.Territories.First().TerritoryID, actual.Territories.First().TerritoryID);
         }
     }
 }

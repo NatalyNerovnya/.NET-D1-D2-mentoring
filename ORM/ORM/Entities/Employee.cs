@@ -33,17 +33,19 @@
 
         public string Extension { get; set; }
 
-        public byte? Photo { get; set; }
+        public byte[] Photo { get; set; }
 
         public string Notes { get; set; }
 
         public string PhotoPath { get; set; }
+
+        public int ReportsTo { get; set; }
 
         public List<Order> Orders { get; set; }
 
         public List<Territory> Territories { get; set; }
 
 
-        public Employee ReportsTo { get; set; }
+        public Employee EmployeeReportsTo { get; set; }
     }
 }

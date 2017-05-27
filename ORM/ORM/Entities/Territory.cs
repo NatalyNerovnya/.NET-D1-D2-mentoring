@@ -4,11 +4,11 @@
 
     public class Territory
     {
-        public string Id { get; set; }
+        public string TerritoryID { get; set; }
 
         public string TerritoryDescription { get; set; }
 
-        //public int RegionID { get; set; }
+        public int RegionID { get; set; }
 
         public List<Employee> Employees { get; set; }
 

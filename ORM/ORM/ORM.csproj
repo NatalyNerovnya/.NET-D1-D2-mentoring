@@ -64,8 +64,10 @@
     <Compile Include="Entities\Supplier.cs" />
     <Compile Include="Entities\Territory.cs" />
     <Compile Include="Mappers\CategoryMap.cs" />
+    <Compile Include="Mappers\EmployeeMap.cs" />
     <Compile Include="Mappers\ProductMap.cs" />
     <Compile Include="Mappers\SupplierMap.cs" />
+    <Compile Include="Mappers\TerritoryMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
