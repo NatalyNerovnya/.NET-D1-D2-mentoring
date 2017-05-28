@@ -1,6 +1,8 @@
 ﻿namespace ORM.Tests
 {
+    using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Data.SqlClient;
     using System.Linq;
     using Dapper;
@@ -135,6 +137,34 @@
             Assert.AreEqual(expected.Territories.First().RegionID, actual.Territories.First().RegionID);
             Assert.AreEqual(expected.Territories.First().TerritoryDescription, actual.Territories.First().TerritoryDescription);
             Assert.AreEqual(expected.Territories.First().TerritoryID, actual.Territories.First().TerritoryID);
+        }
+
+
+        [TestMethod]
+        public void ExecuteProcedure()
+        {
+            using (var db = new SqlConnection(this.connectionString))
+            {
+                var Beginning_Date = new DateTime(1997, 1, 1);
+                var Ending_Date = new DateTime(1997, 12, 30);
+                var result = db.Query<Statistic>(
+                    "Employee Sales by Country",
+                    new { Beginning_Date, Ending_Date },
+                    commandType: CommandType.StoredProcedure);
+
+                var actual = result.OrderByDescending(r => r.SaleAmount).First();
+                var expected = new Statistic()
+                                   {
+                                       LastName = "Peacock",
+                                       OrderID = 10417,
+                                       SaleAmount = 11188
+                };
+
+                Assert.IsNotNull(result);
+                Assert.AreEqual(expected.LastName, actual.LastName);
+                Assert.AreEqual(expected.SaleAmount, actual.SaleAmount);
+                Assert.AreEqual(expected.OrderID, actual.OrderID);
+            }
         }
     }
 }
