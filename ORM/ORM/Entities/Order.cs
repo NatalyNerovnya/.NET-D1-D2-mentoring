@@ -4,7 +4,7 @@
 
     public class Order
     {
-        public int Id { get; set; }
+        public int OrderID { get; set; }
 
         public DateTime? OrderDate { get; set; }
 
@@ -26,6 +26,12 @@
 
         public string ShipCountry { get; set; }
 
+        public int ShipVia { get; set; }
+
+        public string CustomerID { get; set; }
+
+        public int EmployeeID { get; set; }
+
 
 
 
@@ -33,6 +39,6 @@
 
         public Employee Employee { get; set; }
 
-        public Shipper ShipVia { get; set; }
+        public Shipper Shipper { get; set; }
     }
 }

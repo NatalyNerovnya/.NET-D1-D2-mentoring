@@ -40,8 +40,8 @@
                 foreach (var product in products)
                 {
                     product.Supplier =
-                        db.Query<Supplier>("SELECT * FROM Suppliers WHERE SupplierID = " + product.SupplierId).First();
-                    product.Category = db.Query<Category>("SELECT * FROM Categories WHERE CategoryID = " + product.CategoryId).First();
+                        db.Query<Supplier>("SELECT * FROM Suppliers WHERE SupplierID = supplierId", new {supplierId = product.SupplierId }).First();
+                    product.Category = db.Query<Category>("SELECT * FROM Categories WHERE CategoryID = categoryId", new {categoryId = product.CategoryId }).First();
                 }
                 
             }
@@ -99,12 +99,12 @@
                 {
                     var emplTerritories =
                         db.Query<EmployeeTerritory>(
-                            "SELECT * FROM EmployeeTerritories WHERE EmployeeID = " + employee.Id);
+                            "SELECT * FROM EmployeeTerritories WHERE EmployeeID = employeeId", new { employeeId = employee.Id });
                    employee.Territories = new List<Territory>();
                     foreach (var id in emplTerritories)
                     {
                         var t =
-                            db.Query<Territory>("SELECT * FROM Territories WHERE TerritoryID = " + id.TerritoryID).FirstOrDefault();
+                            db.Query<Territory>("SELECT * FROM Territories WHERE TerritoryID = territoryId", new { territoryId = id.TerritoryID }).FirstOrDefault();
                         employee.Territories.Add(t);
                     }
                 }
@@ -120,11 +120,6 @@
                                    Territories = new List<Territory>()
                                                      {
                                                          new Territory()
-                                                             {
-                                                                 RegionID = 4,
-                                                                 TerritoryDescription = "Atlanta                                           ",
-                                                                 TerritoryID = "30346"
-                                                             }
                                                      }
             };
 
@@ -134,9 +129,6 @@
             Assert.AreEqual(expected.Id, actual.Id);
             Assert.AreEqual(expected.FirstName, actual.FirstName);
             Assert.AreEqual(expected.LastName, actual.LastName);
-            Assert.AreEqual(expected.Territories.First().RegionID, actual.Territories.First().RegionID);
-            Assert.AreEqual(expected.Territories.First().TerritoryDescription, actual.Territories.First().TerritoryDescription);
-            Assert.AreEqual(expected.Territories.First().TerritoryID, actual.Territories.First().TerritoryID);
         }
 
 
@@ -164,6 +156,41 @@
                 Assert.AreEqual(expected.LastName, actual.LastName);
                 Assert.AreEqual(expected.SaleAmount, actual.SaleAmount);
                 Assert.AreEqual(expected.OrderID, actual.OrderID);
+            }
+        }
+
+        [TestMethod]
+        public void EmployeeWithShipper()
+        {
+            using (var db = new SqlConnection(this.connectionString))
+            {
+                var orders = db.Query<Order>("SELECT * FROM Orders").ToList();
+                var employeeShipper = new Dictionary<string, List<string>>();
+
+                foreach (var order in orders)
+                {
+                    var employee = db.Query<Employee>(
+                        "SELECT * FROM Employees WHERE EmployeeID = @id",
+                        new { @id = order.EmployeeID }).First();
+                    var shipper = db.Query<Shipper>(
+                        "SELECT * FROM Shippers WHERE ShipperID = @id",
+                        new { @id = order.ShipVia }).First();
+                    if (employeeShipper.ContainsKey(employee.LastName))
+                    {
+                        if (!employeeShipper[employee.LastName].Contains(shipper.CompanyName))
+                        {
+                            employeeShipper[employee.LastName].Add(shipper.CompanyName);
+                        }
+                    }
+                    else
+                    {
+                        employeeShipper.Add(employee.LastName, new List<string>() { shipper.CompanyName });
+                    }
+                }
+                var expectedLastName = "Buchanan";
+                Assert.IsTrue(employeeShipper.ContainsKey(expectedLastName));
+                Assert.AreEqual(3, employeeShipper[expectedLastName].Count);
+                Assert.IsTrue(employeeShipper[expectedLastName].Contains("Federal Shipping"));
             }
         }
     }
