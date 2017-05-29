@@ -40,34 +40,34 @@
                 foreach (var product in products)
                 {
                     product.Supplier =
-                        db.Query<Supplier>("SELECT * FROM Suppliers WHERE SupplierID = supplierId", new {supplierId = product.SupplierId }).First();
-                    product.Category = db.Query<Category>("SELECT * FROM Categories WHERE CategoryID = categoryId", new {categoryId = product.CategoryId }).First();
+                        db.Query<Supplier>("SELECT * FROM Suppliers WHERE SupplierID = supplierId", new { supplierId = product.SupplierId }).First();
+                    product.Category = db.Query<Category>("SELECT * FROM Categories WHERE CategoryID = categoryId", new { categoryId = product.CategoryId }).First();
                 }
-                
+
             }
 
             var actual = products.FirstOrDefault(p => p.Id == 1);
 
             var expected = new Product()
-                               {
-                                   Id = 1,
-                                   Category = new Category()
-                                                  {
-                                                      Id = 1,
-                                                      CategoryName = "Beverages",
-                                                      Description = "Soft drinks, coffees, teas, beers, and ales"
-                                   },
-                                   Supplier = new Supplier()
-                                                  {
-                                                      Id = 1,
-                                                      ContactName = "Charlotte Cooper",
-                                                      ContactTitle = "Purchasing Manager",
-                                                      City = "London", 
-                                                      CompanyName = "Exotic Liquids"
-                                   },
-                                   Discontinued = false,
-                                   ProductName = "Chai",
-                                   QuantityPerUnit = "10 boxes x 20 bags"
+            {
+                Id = 1,
+                Category = new Category()
+                {
+                    Id = 1,
+                    CategoryName = "Beverages",
+                    Description = "Soft drinks, coffees, teas, beers, and ales"
+                },
+                Supplier = new Supplier()
+                {
+                    Id = 1,
+                    ContactName = "Charlotte Cooper",
+                    ContactTitle = "Purchasing Manager",
+                    City = "London",
+                    CompanyName = "Exotic Liquids"
+                },
+                Discontinued = false,
+                ProductName = "Chai",
+                QuantityPerUnit = "10 boxes x 20 bags"
             };
 
             Assert.AreEqual(expected.Id, actual.Id);
@@ -100,7 +100,7 @@
                     var emplTerritories =
                         db.Query<EmployeeTerritory>(
                             "SELECT * FROM EmployeeTerritories WHERE EmployeeID = employeeId", new { employeeId = employee.Id });
-                   employee.Territories = new List<Territory>();
+                    employee.Territories = new List<Territory>();
                     foreach (var id in emplTerritories)
                     {
                         var t =
@@ -113,11 +113,11 @@
             var actual = employees.FirstOrDefault(e => e.Id == 3);
 
             var expected = new Employee()
-                               {
-                                   Id = 3,
-                                   LastName = "Leverling",
-                                   FirstName = "Janet",
-                                   Territories = new List<Territory>()
+            {
+                Id = 3,
+                LastName = "Leverling",
+                FirstName = "Janet",
+                Territories = new List<Territory>()
                                                      {
                                                          new Territory()
                                                      }
@@ -146,10 +146,10 @@
 
                 var actual = result.OrderByDescending(r => r.SaleAmount).First();
                 var expected = new Statistic()
-                                   {
-                                       LastName = "Peacock",
-                                       OrderID = 10417,
-                                       SaleAmount = 11188
+                {
+                    LastName = "Peacock",
+                    OrderID = 10417,
+                    SaleAmount = 11188
                 };
 
                 Assert.IsNotNull(result);
@@ -191,6 +191,56 @@
                 Assert.IsTrue(employeeShipper.ContainsKey(expectedLastName));
                 Assert.AreEqual(3, employeeShipper[expectedLastName].Count);
                 Assert.IsTrue(employeeShipper[expectedLastName].Contains("Federal Shipping"));
+            }
+        }
+
+        [TestMethod]
+        public void AddEmployee()
+        {
+            var employee = new Employee()
+            {
+                City = "Minsk",
+                FirstName = "Natasha",
+                LastName = "Nerovnya",
+                Territories = new List<Territory>()
+                                  {
+                                      new Territory()
+                                          {
+                                              RegionID = 1,
+                                              TerritoryDescription = "Nata"
+                                          }
+                                  }
+            };
+
+            using (var connection = new SqlConnection(this.connectionString))
+            {
+                connection.Execute(
+                    "INSERT INTO Employees (City, FirstName, LastName) VALUES (@city, @firstName, @lastName)",
+                    new { @firstName = employee.FirstName, @lastName = employee.LastName, @city = employee.City });
+
+                connection.Execute(
+                    "INSERT INTO Territories(RegionID, TerritoryDescription, TerritoryID) VALUES (@regionId, @description, 11111)",
+                    new
+                        {
+                            @regionId = employee.Territories.First().RegionID,
+                            @description = employee.Territories.First().TerritoryDescription
+                        });
+                var addedEmployeeId = connection.Query<int>("SELECT MAX(EmployeeID) FROM Employees").First();
+                connection.Execute(
+                    "INSERT INTO EmployeeTerritories (EmployeeID, TerritoryID) VALUES (@employeeId, @territoryID)",
+                    new { @employeeId = addedEmployeeId, @territoryId = 11111 });
+
+                var newEmployee = connection.Query<Employee>(
+                    "SELECT * FROM Employees WHERE EmployeeID = @id",
+                    new { @id = addedEmployeeId }).First();
+
+                Assert.AreEqual(employee.FirstName, newEmployee.FirstName);
+                Assert.AreEqual(employee.LastName, newEmployee.LastName);
+                Assert.AreEqual(employee.City, newEmployee.City);
+
+                connection.Execute("DELETE FROM EmployeeTerritories WHERE TerritoryID = 11111");
+                connection.Execute("DELETE FROM Territories WHERE TerritoryID = 11111");
+                connection.Execute("DELETE FROM Employees WHERE EmployeeID = @id", new { @id = addedEmployeeId });
             }
         }
     }
