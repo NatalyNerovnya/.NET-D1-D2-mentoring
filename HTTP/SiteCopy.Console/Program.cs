@@ -4,9 +4,9 @@
     {
         static void Main(string[] args)
         {
-            var urlPath = "https://www.tut.by/";
+            var urlPath = "https://translate.google.com/";
             var folderPath = @"D:\Nana\";
-            CustomWget.Download(urlPath, folderPath);
+            CustomWget.Download(urlPath, folderPath, 2);
         }
     }
 }

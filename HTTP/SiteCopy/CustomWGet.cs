@@ -3,6 +3,7 @@
     using System;
     using System.CodeDom;
     using System.IO;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Runtime.CompilerServices;
@@ -22,32 +23,89 @@
             string[] extensionRestriction = null,
             bool traicingMode = false)
         {
+            string result;
+            Uri uri;
+            try
+            {
+                uri = new Uri(urlPath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Some problems with path!");
+                Console.WriteLine(e.Message + "\n");
+                
+                return;
+            }
+
+
             using (var client = new HttpClient())
             {
-                var uri = new Uri(urlPath);
-                var result = Task<HtmlDocument>.Run(() => client.GetAsync(uri)).Result.Content.ReadAsStringAsync().Result;
-                folderPath += uri.Host;
-                if (!Directory.Exists(folderPath))
+                try
                 {
-                    Directory.CreateDirectory(folderPath);
+                    if (uri.Scheme != "http" && uri.Scheme != "https")
+                    {
+                        throw new ArgumentException($"Not HTTP or HTTPS schema. (Actualy it's {uri.Scheme})");
+                    }
+                    result = Task<string>.Run(() => client.GetAsync(uri)).Result.Content.ReadAsStringAsync().Result;
                 }
-                var name = uri.AbsolutePath == @"\" || uri.AbsolutePath == "/" ? "main" : uri.AbsolutePath;
-                var fileName = name + "_copy.html";
-                var filePath = $@"{folderPath}\{fileName}";
-                while (File.Exists(filePath))
+                catch (Exception e)
                 {
-                    filePath = NewFileName(folderPath, ref fileName);
+                    Console.WriteLine($"Some problems while loading from {uri} are occured.");
+                    Console.WriteLine(e.Message + "\n");
+                    return;
                 }
-                using (var file = File.Create(filePath))
-                {
-                }
+                
+            }
 
-                using (var writer = new StreamWriter(filePath))
+            if (!folderPath.Contains(uri.Host))
+            {
+                folderPath += @"\" + uri.Host;
+            }
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var name = uri.AbsolutePath == @"\" || uri.AbsolutePath == "/" ? "main" : uri.AbsolutePath;
+            var fileName = name + "_copy.html";
+            fileName = fileName.Replace("/", string.Empty);
+            fileName = fileName.Replace(@"\", string.Empty);
+            var filePath = $@"{folderPath}\{fileName}";
+            while (File.Exists(filePath))
+            {
+                filePath = NewFileName(folderPath, ref fileName);
+            }
+
+            using (var file = File.Create(filePath))
+            {
+            }
+
+            using (var writer = new StreamWriter(filePath))
+            {
+                Task.Run(() => writer.WriteAsync(result)).Wait();
+            }
+
+            if (analysisnLevel <= 0)
+            {
+                return;
+            }
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(result);
+            var nodes = doc.DocumentNode.SelectNodes("//a")?.ToArray();
+
+            if (nodes == null)
+            {
+                return;
+            }
+            foreach (var node in nodes)
+            {
+                var reference = node.GetAttributeValue("href", string.Empty);
+                if (reference != string.Empty)
                 {
-                    Task.Run(() => writer.WriteAsync(result)).Wait();
+                    Download(reference, folderPath, analysisnLevel - 1);
                 }
-
-
             }
         }
 
