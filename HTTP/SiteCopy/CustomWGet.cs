@@ -1,14 +1,9 @@
 ﻿namespace SiteCopy
 {
     using System;
-    using System.CodeDom;
     using System.IO;
     using System.Linq;
     using System.Net.Http;
-    using System.Net.Http.Headers;
-    using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices;
-    using System.Security.Policy;
     using System.Threading.Tasks;
 
     using HtmlAgilityPack;
@@ -23,6 +18,8 @@
             string[] extensionRestriction = null,
             bool traicingMode = false)
         {
+            if (traicingMode)
+                Console.WriteLine($"Analise on level {analysisnLevel}");
             string result;
             Uri uri;
             try
@@ -31,7 +28,7 @@
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Some problems with path!");
+                Console.WriteLine($"Some problems with path ({urlPath}).");
                 Console.WriteLine(e.Message + "\n");
                 
                 return;
@@ -54,7 +51,6 @@
                     Console.WriteLine(e.Message + "\n");
                     return;
                 }
-                
             }
 
             if (!folderPath.Contains(uri.Host))
@@ -65,6 +61,8 @@
             if (!Directory.Exists(folderPath))
             {
                 Directory.CreateDirectory(folderPath);
+                if (traicingMode)
+                    Console.WriteLine($"Create new directory: {folderPath}");
             }
 
             var name = uri.AbsolutePath == @"\" || uri.AbsolutePath == "/" ? "main" : uri.AbsolutePath;
@@ -79,6 +77,8 @@
 
             using (var file = File.Create(filePath))
             {
+                if(traicingMode)
+                    Console.WriteLine($"Write to {filePath}");
             }
 
             using (var writer = new StreamWriter(filePath))

@@ -6,7 +6,7 @@
         {
             var urlPath = "https://translate.google.com/";
             var folderPath = @"D:\Nana\";
-            CustomWget.Download(urlPath, folderPath, 2);
+            CustomWget.Download(urlPath, folderPath, 2, traicingMode: true);
         }
     }
 }
