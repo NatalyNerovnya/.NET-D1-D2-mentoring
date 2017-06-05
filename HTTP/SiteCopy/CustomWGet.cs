@@ -39,7 +39,7 @@
             try
             {
                 if (traicingMode) notifier.Notify($"Processing {uri}");
-                result = await GetData(uri);
+                result = await GetDataAsync(uri);
             }
             catch (Exception e)
             {
@@ -120,7 +120,7 @@
 
             using (var writer = new StreamWriter(filePath))
             {
-                Task.Run(() => writer.WriteAsync(result)).Wait();
+                writer.WriteAsync(result).Wait();
             }
 
             return filePath;
@@ -140,7 +140,7 @@
             return folderPath;
         }
 
-        private static async Task<string> GetData(Uri uri)
+        private static async Task<string> GetDataAsync(Uri uri)
         {
             string result;
             using (var client = new HttpClient())
