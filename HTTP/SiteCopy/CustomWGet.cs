@@ -21,7 +21,7 @@
             bool traicingMode = false)
         {
             if (traicingMode)
-                notifier.Notify($"Analise on level {analysisnLevel}");
+                notifier.Notify($"\nAnalise on level {analysisnLevel}");
 
             string result;
             Uri uri;
@@ -31,8 +31,8 @@
             }
             catch (Exception e)
             {
-                notifier.Notify($"Some problems with path ({urlPath}).");
-                notifier.Notify(e.Message + "\n");
+                notifier.Notify($"----Some problems with path ({urlPath}).");
+                notifier.Notify($"----{e.Message}");
                 return;
             }
 
@@ -43,11 +43,10 @@
             }
             catch (Exception e)
             {
-                notifier.Notify($"Some problems while loading from {uri} are occured.");
-                notifier.Notify(e.Message + "\n");
+                notifier.Notify($"----Some problems while loading from {uri} are occured.");
+                notifier.Notify($"----{e.Message}");
                 return;
             }
-
 
             if (traicingMode)
                 notifier.Notify($"Create new directory: {folderPath}");
@@ -55,7 +54,7 @@
             
             var filePath = CreateAndFillFile(uri, folderPath, result);
             if (traicingMode)
-                notifier.Notify($"Write to {filePath} \n");
+                notifier.Notify($"Write to {filePath}");
 
             if (analysisnLevel <= 0)
             {
@@ -78,8 +77,8 @@
                 }
                 catch (Exception e)
                 {
-                    notifier.Notify($"Some problems with path ({reference}).");
-                    notifier.Notify(e.Message + "\n");
+                    notifier.Notify($"----Some problems with path ({reference}).");
+                    notifier.Notify($"----{e.Message}");
                     return;
                 }
                 
