@@ -38,7 +38,7 @@
 
             try
             {
-                if (traicingMode) notifier.Notify($"Processing {uri}\n");
+                if (traicingMode) notifier.Notify($"Processing {uri}");
                 result = await GetData(uri);
             }
             catch (Exception e)
@@ -55,7 +55,7 @@
             
             var filePath = CreateAndFillFile(uri, folderPath, result);
             if (traicingMode)
-                notifier.Notify($"Write to {filePath}");
+                notifier.Notify($"Write to {filePath} \n");
 
             if (analysisnLevel <= 0)
             {
@@ -86,7 +86,7 @@
                 if (domainRestriction == DomainRestriction.InInitialURLOnly && newUri.Host != uri.Host)
                 {
                     if (traicingMode)
-                        notifier.Notify($"The url isn't in current domain: {reference}");
+                        notifier.Notify($"The url isn't in initial url: {reference}");
                     return;
                 }
 
@@ -107,11 +107,11 @@
 
         private static string CreateAndFillFile(Uri uri, string folderPath, string result)
         {
-            var name = uri.AbsolutePath == @"\" || uri.AbsolutePath == "/" ? "main" : uri.AbsolutePath;
+            var name = uri.AbsolutePath == Path.DirectorySeparatorChar.ToString() || uri.AbsolutePath == Path.AltDirectorySeparatorChar.ToString() ? "main" : uri.AbsolutePath;
             var fileName = name + "_copy.html";
-            fileName = fileName.Replace("/", string.Empty);
-            fileName = fileName.Replace(@"\", string.Empty);
-            var filePath = $@"{folderPath}\{fileName}";
+            fileName = fileName.Replace(Path.AltDirectorySeparatorChar.ToString(), string.Empty);
+            fileName = fileName.Replace(Path.DirectorySeparatorChar.ToString(), string.Empty);
+            var filePath = $@"{folderPath}{Path.DirectorySeparatorChar}{fileName}";
             while (File.Exists(filePath))
             {
                 filePath = NewFileName(folderPath, ref fileName);
@@ -131,7 +131,7 @@
         {
             if (!folderPath.Contains(Host))
             {
-                folderPath += @"\" + Host;
+                folderPath += Path.DirectorySeparatorChar + Host;
             }
 
             if (!Directory.Exists(folderPath))
@@ -160,8 +160,7 @@
         private static string NewFileName(string folderPath, ref string fileName)
         {
             fileName = "New" + fileName;
-            return $@"{folderPath}\{fileName}";
+            return $@"{folderPath}{Path.DirectorySeparatorChar}{fileName}";
         }
-
     }
 }
