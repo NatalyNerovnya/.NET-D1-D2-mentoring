@@ -4,7 +4,6 @@
     using System.IO;
     using System.Linq;
     using System.Net.Http;
-    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
 
     using HtmlAgilityPack;
@@ -13,7 +12,7 @@
     {
         private static readonly INotifier notifier = new ConsoleNotifier(); 
 
-        public static async void  Download(
+        public static async Task  DownloadAsync(
             string urlPath,
             string folderPath,
             int analysisnLevel = 1,
@@ -91,7 +90,7 @@
 
                 if (reference != string.Empty)
                 {
-                    Download(reference, folderPath, analysisnLevel - 1, domainRestriction, traicingMode);
+                    await DownloadAsync(reference, folderPath, analysisnLevel - 1, domainRestriction, traicingMode);
                 }
             }
         }
@@ -120,7 +119,7 @@
 
             using (var writer = new StreamWriter(filePath))
             {
-                writer.WriteAsync(result).Wait();
+                writer.Write(result);
             }
 
             return filePath;
@@ -149,8 +148,7 @@
                 {
                     throw new ArgumentException($"Not HTTP or HTTPS schema. (Actualy it's {uri.Scheme})");
                 }
-
-                result = await client.GetAsync(uri).Result.Content.ReadAsStringAsync();
+                result = await client.GetStringAsync(uri);
             }
 
             return result;
