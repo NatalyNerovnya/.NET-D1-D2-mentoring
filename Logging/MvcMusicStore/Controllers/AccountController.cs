@@ -1,13 +1,22 @@
-﻿using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Owin.Security;
-using MvcMusicStore.Models;
-
-namespace MvcMusicStore.Controllers
+﻿namespace MvcMusicStore.Controllers
 {
+    using System.Configuration;
+    using System.Threading.Tasks;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.WebPages;
+
+    using Logging;
+
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.Owin.Security;
+
+    using MvcMusicStore.Infrastructure;
+    using MvcMusicStore.Models;
+
+    using PerformanceCounterHelper;
+
     [Authorize]
     public class AccountController : Controller
     {
@@ -23,9 +32,19 @@ namespace MvcMusicStore.Controllers
 
         private UserManager<ApplicationUser> _userManager;
 
+        private static CounterHelper<Counters> counterHelper;
+
+        private ILogger logger;
+
         public AccountController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
+            counterHelper = PerformanceHelper.CreateCounterHelper<Counters>("MvcMusicStore");
+            bool enableLogging = ConfigurationManager.AppSettings["Logging"].AsBool();
+            if (enableLogging)
+            {
+                this.logger = new Logger();
+            }
         }
 
         public AccountController(UserManager<ApplicationUser> userManager)
@@ -40,6 +59,8 @@ namespace MvcMusicStore.Controllers
 
         private async Task MigrateShoppingCart(string userName)
         {
+            this.logger?.LogDebug("Migrate shopping cart");
+
             using (var storeContext = new MusicStoreEntities())
             {
                 var cart = ShoppingCart.GetCart(storeContext, this);
@@ -54,6 +75,9 @@ namespace MvcMusicStore.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            this.logger?.LogDebug("Login");
+            //counterHelper.Increment(Counters.Login);
+
             ViewBag.ReturnUrl = returnUrl;
 
             return View();
@@ -65,8 +89,11 @@ namespace MvcMusicStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            this.logger?.LogDebug("Login post");
             if (ModelState.IsValid)
             {
+                this.logger?.LogInfo("Loggin model is valid");
+
                 var user = await _userManager.FindAsync(model.UserName, model.Password);
                 if (user != null)
                 {
@@ -85,6 +112,8 @@ namespace MvcMusicStore.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            this.logger?.LogDebug("Registration");
+            counterHelper.Increment(Counters.Registration);
             return View();
         }
 
@@ -96,6 +125,7 @@ namespace MvcMusicStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                this.logger?.LogInfo("Registration model is valid");
                 var user = new ApplicationUser { UserName = model.UserName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -317,6 +347,9 @@ namespace MvcMusicStore.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            this.logger?.LogDebug("Logoff");
+
+            counterHelper.Increment(Counters.Logoff);
             AuthenticationManager.SignOut();
 
             return RedirectToAction("Index", "Home");
@@ -332,6 +365,7 @@ namespace MvcMusicStore.Controllers
         [ChildActionOnly]
         public ActionResult RemoveAccountList()
         {
+            this.logger?.LogInfo("RemoveAccountList");
             var linkedAccounts = _userManager.GetLogins(User.Identity.GetUserId());
 
             ViewBag.ShowRemoveButton = HasPassword() || linkedAccounts.Count > 1;
