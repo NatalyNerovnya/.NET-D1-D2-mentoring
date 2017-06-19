@@ -1,6 +1,7 @@
 ﻿namespace CachingSolutionsSamples.Order
 {
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.SqlClient;
     using System.Runtime.Caching;
 
@@ -19,8 +20,27 @@
         public void Set(string forUser, IEnumerable<Order> orders)
         {
             var policy = new CacheItemPolicy();
-            policy.ChangeMonitors.Add(new SqlChangeMonitor(new SqlDependency(new SqlCommand("select * from Orders"))));
-            cache.Set(prefix + forUser, orders, ObjectCache.InfiniteAbsoluteExpiration);
+            string connStr = ConfigurationManager.ConnectionStrings["Northwind"].ConnectionString;
+            SqlDependency.Start(connStr);
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                using (SqlCommand command = new SqlCommand("Select * From Orders", conn))
+                {
+                    command.Notification = null;
+
+                    SqlDependency dep = new SqlDependency();
+
+                    dep.AddCommandDependency(command);
+
+                    conn.Open();
+
+                    SqlChangeMonitor monitor = new SqlChangeMonitor(dep);
+
+                    policy.ChangeMonitors.Add(monitor);
+                }
+
+                cache.Set(prefix + forUser, orders, policy);
+            }
         }
     }
 }
