@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.XML" />
@@ -69,8 +70,16 @@
     <Compile Include="CategoriesManager.cs" />
     <Compile Include="CategoriesMemoryCache.cs" />
     <Compile Include="CategoriesRedisCache.cs" />
+    <Compile Include="Employees\EmployeesManager.cs" />
+    <Compile Include="Employees\EmployeesMemoryCache.cs" />
+    <Compile Include="Employees\EmployeesRedisCache.cs" />
+    <Compile Include="Employees\IEmployeeCache.cs" />
     <Compile Include="ICategoriesCache.cs" />
     <Compile Include="CacheTests.cs" />
+    <Compile Include="Order\IOrderCache.cs" />
+    <Compile Include="Order\OrderManager.cs" />
+    <Compile Include="Order\OrdersMemoryCache.cs" />
+    <Compile Include="Order\OrdersRedisCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
