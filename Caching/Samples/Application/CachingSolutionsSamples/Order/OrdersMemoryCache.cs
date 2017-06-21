@@ -9,12 +9,12 @@
 
     public class OrdersMemoryCache : IOrderCache
     {
-        ObjectCache cache = MemoryCache.Default;
-        string prefix = "Cache_Orders";
+        private ObjectCache cache = MemoryCache.Default;
+        private string prefix = "Cache_Orders";
 
         public IEnumerable<Order> Get(string forUser)
         {
-            return (IEnumerable<Order>)cache.Get(prefix + forUser);
+            return (IEnumerable<Order>)this.cache.Get(this.prefix + forUser);
         }
 
         public void Set(string forUser, IEnumerable<Order> orders)
@@ -27,19 +27,16 @@
                 using (SqlCommand command = new SqlCommand("Select * From Orders", conn))
                 {
                     command.Notification = null;
-
                     SqlDependency dep = new SqlDependency();
-
                     dep.AddCommandDependency(command);
-
                     conn.Open();
 
                     SqlChangeMonitor monitor = new SqlChangeMonitor(dep);
-
+                    
                     policy.ChangeMonitors.Add(monitor);
                 }
 
-                cache.Set(prefix + forUser, orders, policy);
+                this.cache.Set(this.prefix + forUser, orders, policy);
             }
         }
     }
