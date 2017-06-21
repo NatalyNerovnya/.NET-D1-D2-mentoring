@@ -26,6 +26,9 @@
         [XmlAttribute("id")]
         public string Id { get; set; }
 
+        [XmlElement("isbn")]
+        public string Isbn { get; set; }
+
         [XmlElement("author")]
         public string Author { get; set; }
 
@@ -43,5 +46,8 @@
 
         [XmlElement("description")]
         public string Description { get; set; }
+
+        [XmlElement("registration_date")]
+        public DateTime RegistrationDate { get; set; }
     }
 }

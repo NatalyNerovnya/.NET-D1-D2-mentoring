@@ -9,9 +9,13 @@
     [XmlRoot(Namespace = "http://library.by/catalog")]
     public class Catalog
     {
-        //[XmlArrayItem("book")]
-        //[XmlElement("book")]
-        //public IEnumerable<Book> Books { get; set; }
+        //public Catalog()
+        //{
+        //    this.Books = new List<Book>();
+        //}
+
+        [XmlElement("book")]
+        public List<Book> Books { get; set; }
 
         [XmlAttribute("date")]
         public DateTime Date { get; set; }
