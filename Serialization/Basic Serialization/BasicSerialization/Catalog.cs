@@ -9,11 +9,6 @@
     [XmlRoot(Namespace = "http://library.by/catalog")]
     public class Catalog
     {
-        //public Catalog()
-        //{
-        //    this.Books = new List<Book>();
-        //}
-
         [XmlElement("book")]
         public List<Book> Books { get; set; }
 
