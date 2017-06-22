@@ -59,11 +59,12 @@
         [TestMethod]
         public void IDataContractSurrogate()
         {
-            dbContext.Configuration.ProxyCreationEnabled = true;
+            dbContext.Configuration.ProxyCreationEnabled = false;
             dbContext.Configuration.LazyLoadingEnabled = true;
-
+            
             var tester = new XmlDataContractSerializerTester<IEnumerable<Order>>(new DataContractSerializer(typeof(IEnumerable<Order>)), true);
-            var orders = dbContext.Orders.ToList();
+            
+            var orders = dbContext.Orders.AsNoTracking().ToList();
 
             tester.SerializeAndDeserialize(orders);
         }
