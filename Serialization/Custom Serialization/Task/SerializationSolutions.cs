@@ -1,6 +1,7 @@
 ﻿namespace Task
 {
     using System.Collections.Generic;
+    using System.Data.Entity.Infrastructure;
     using System.Linq;
     using System.Runtime.Serialization;
 
@@ -41,6 +42,13 @@
             var tester = new XmlDataContractSerializerTester<IEnumerable<Product>>(new NetDataContractSerializer(), true);
             var products = dbContext.Products.ToList();
 
+            var objContext = (dbContext as IObjectContextAdapter).ObjectContext;
+            foreach (var product in products)
+            {
+                objContext.LoadProperty(product, f => f.Category);
+                objContext.LoadProperty(product, f => f.Supplier);
+            }
+
             tester.SerializeAndDeserialize(products);
         }
 
@@ -53,6 +61,13 @@
             var tester = new XmlDataContractSerializerTester<IEnumerable<Order_Detail>>(new NetDataContractSerializer(), true);
             var orderDetails = dbContext.Order_Details.ToList();
 
+            var objContext = (dbContext as IObjectContextAdapter).ObjectContext;
+            foreach (var detail in orderDetails)
+            {
+                objContext.LoadProperty(detail, f => f.Order);
+                objContext.LoadProperty(detail, f => f.Product);
+            }
+
             tester.SerializeAndDeserialize(orderDetails);
         }
 
@@ -60,10 +75,10 @@
         public void IDataContractSurrogate()
         {
             dbContext.Configuration.ProxyCreationEnabled = false;
-            dbContext.Configuration.LazyLoadingEnabled = true;
-            
+            dbContext.Configuration.LazyLoadingEnabled = false;
+
             var tester = new XmlDataContractSerializerTester<IEnumerable<Order>>(new DataContractSerializer(typeof(IEnumerable<Order>)), true);
-            
+
             var orders = dbContext.Orders.AsNoTracking().ToList();
 
             tester.SerializeAndDeserialize(orders);
