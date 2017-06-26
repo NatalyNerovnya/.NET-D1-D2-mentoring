@@ -28,9 +28,7 @@
 
             var tester = new XmlDataContractSerializerTester<IEnumerable<Category>>(new NetDataContractSerializer(), true);
             var categories = dbContext.Categories.ToList();
-
-            var c = categories.First();
-
+            
             tester.SerializeAndDeserialize(categories);
         }
 

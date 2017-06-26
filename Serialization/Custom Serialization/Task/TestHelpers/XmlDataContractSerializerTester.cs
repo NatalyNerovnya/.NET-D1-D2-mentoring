@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Task.TestHelpers
+﻿namespace Task.TestHelpers
 {
     using System.IO;
     using System.Runtime.Serialization;
