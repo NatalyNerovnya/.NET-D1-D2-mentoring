@@ -19,6 +19,6 @@ public class Singleton
 ```
 
 ## Disadvantages of task solution
-	- not thred safety;
-	- in case of multithreading not only one instance can be created;
-	- class can be inherited and new instance can be created;
+- not thred safety;
+- in case of multithreading not only one instance can be created;
+- class can be inherited and new instance can be created;
