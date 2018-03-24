@@ -1,0 +1,1 @@
+Realization of "Chain of responsibility" pattern

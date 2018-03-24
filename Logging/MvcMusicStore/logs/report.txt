@@ -1,0 +1,4 @@
+Text 
+---------------------------------------------------------
+2017-06-12 14:03:34.6777 INFO Loggin model is valid
+2017-06-12 14:03:51.2019 INFO Registration model is valid
